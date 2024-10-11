@@ -45,3 +45,15 @@ input {
     text-transform: uppercase;
     text-align: center;
 }
+
+#clues {
+    width: 90vw;
+    max-width: 500px;
+    max-height: 500px;
+    margin: 0 auto;
+    list-style: none;
+}
+
+li {
+        margin: 10px;
+}
