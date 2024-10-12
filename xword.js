@@ -10,9 +10,9 @@ window.onload = () => {
 function makeGrid(gridSize) {
 	for (let i = 0; i < gridSize ** 2 ; i++) {
 		document.querySelector('#container').innerHTML += 
-			'<span>' + '<input  class="grid__item" id="grid_item-' 
+			'<span class="grid-item" id="grid-item-' 
 			+ i 
-			+ '" type="text" size="1" maxlength="1"></span>'
+			+ '"></span>'
 	}
 }
 
@@ -25,18 +25,19 @@ function parseJson (item, i) {
 		+ ' (' 
 		+ item[i].len 
 		+ ')</li>';	
+
 	const ansArr = item[i].solution.split('');
-	for ( let j = 0; j < ansArr.length; j++) {
-		
+
+	for (let j = 0; j < ansArr.length; j++) {		
 		if (item[i].dir === 'across') {
-			document.querySelector('#grid_item-' 
+			document.querySelector('#grid-item-' 
 				+ (item[i].y * jsObj.gridSize 
 				+ item[i].x 
-				+ j)).setAttribute('value', ansArr[j]);
+				+ j)).innerHTML = '<input type="text" size="1" maxlength="1">'
 		} else {
-			document.querySelector('#grid_item-' 
+			document.querySelector('#grid-item-' 
 				+ (item[i].y * jsObj.gridSize + item[i].x 
-				+ (j * jsObj.gridSize))).setAttribute('value', ansArr[j]);
+					+ (j * jsObj.gridSize))).innerHTML = '<input type="text" size="1" maxlength="1">'
 		}
 	}
 }
