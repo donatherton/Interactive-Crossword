@@ -1,10 +1,10 @@
 
 window.onload = () => {
 	const grid = makeGrid(jsObj.gridSize);
-	//jsObj.clueList.forEach(parseJson);
-	for (let i = 0; i < jsObj.clueList.length; i++) {
-		parseJson(jsObj.clueList, i);
-	}
+	jsObj.clueList.forEach(parseJson);
+	//	for (let i = 0; i < jsObj.clueList.length; i++) {
+	//		parseJson(jsObj.clueList, i);
+	//	}
 }
 
 function makeGrid(gridSize) {
@@ -16,28 +16,40 @@ function makeGrid(gridSize) {
 	}
 }
 
-function parseJson (item, i) {
+function parseJson (item) {
 	document.querySelector('#clues').innerHTML += 
 		'<li>' 
-		+ item[i].clueNo 
-		+ '. ' 
-		+ item[i].clue 
+		+ '<span class="bold">' 
+		+ item.clueNo 
+		+ item.dir
+		+ ': </span>' 
+		+ item.clue 
 		+ ' (' 
-		+ item[i].len 
+		+ item.len 
 		+ ')</li>';	
 
-	const ansArr = item[i].solution.split('');
+	const ansArr = item.solution.split('');
 
 	for (let j = 0; j < ansArr.length; j++) {		
-		if (item[i].dir === 'across') {
+		if (j === 0) {
+			clueNumber = item.clueNo;
+		} else {
+			clueNumber = '';
+		}
+		if (item.dir === 'a') {
 			document.querySelector('#grid-item-' 
-				+ (item[i].y * jsObj.gridSize 
-				+ item[i].x 
-				+ j)).innerHTML = '<input type="text" size="1" maxlength="1">'
+				+ (item.y * jsObj.gridSize 
+				+ item.x 
+				+ j)).innerHTML = '<span class="clueNo">' 
+				+ clueNumber 
+				+ '</span><input type="text" size="1" maxlength="1">'
 		} else {
 			document.querySelector('#grid-item-' 
-				+ (item[i].y * jsObj.gridSize + item[i].x 
-					+ (j * jsObj.gridSize))).innerHTML = '<input type="text" size="1" maxlength="1">'
+				+ (item.y * jsObj.gridSize 
+				+ item.x 
+				+ (j * jsObj.gridSize))).innerHTML = '<span class="clueNo">' 
+				+ clueNumber 
+				+ '</span><input type="text" size="1" maxlength="1">'
 		}
 	}
 }
