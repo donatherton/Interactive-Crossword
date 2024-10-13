@@ -1,6 +1,6 @@
 'use strict'
 window.onload = () => {
-	const grid = makeGrid(jsObj.gridSize);
+	makeGrid(jsObj.gridSize);
 	jsObj.clueList.forEach(parseJson);
 	jsObj.clueList.forEach(clueNumber);
 	//	for (let i = 0; i < jsObj.clueList.length; i++) {
@@ -9,6 +9,7 @@ window.onload = () => {
 }
 
 function makeGrid(gridSize) {
+	/* Creates blank grid */
 	for (let i = 0; i < gridSize ** 2 ; i++) {
 		document.querySelector('#container').innerHTML += 
 			'<span class="grid-item" id="grid-item-' 
@@ -18,13 +19,18 @@ function makeGrid(gridSize) {
 }
 
 function clueNumber(item) {
+	/* Fills in the clue numbers in first cell */
 	const cell = item.y * jsObj.gridSize + item.x;
-	document.querySelector('#grid-item-' + cell).innerHTML += '<span class="clueNo">' 
-		+ item.clueNo 
-		+ '</span>';
+	console.log(document.querySelector('#grid-item-' + cell).querySelector('.clueNo'))
+	if (document.querySelector('#grid-item-' + cell).querySelector('.clueNo') === null) {
+		document.querySelector('#grid-item-' + cell).innerHTML += '<span class="clueNo">' 
+			+ item.clueNo 
+			+ '</span>';
+	}
 }
 
 function parseJson (item) {
+	/* Fills in grid with input elements and creates clue list */
 	document.querySelector('#clues').innerHTML += 
 		'<li>' 
 		+ '<span class="bold">' 
@@ -44,14 +50,17 @@ function parseJson (item) {
 				+ (item.y * jsObj.gridSize 
 				+ item.x 
 				+ j))
-				.innerHTML = '<input type="text" size="1" maxlength="1" <!--value="' 
-				+ ansArr[j] + '"-->>'
+				.innerHTML = '<input type="text" size="1" maxlength="1" value="' 
+				//+ ansArr[j] 
+				+ '">'
 		} else {
 			document.querySelector('#grid-item-' 
 				+ (item.y * jsObj.gridSize 
 				+ item.x 
 				+ (j * jsObj.gridSize)))
-				.innerHTML = '<input type="text" size="1" maxlength="1" <!--value="' + ansArr[j] + '"-->>'
+				.innerHTML = '<input type="text" size="1" maxlength="1" value="' 
+				//+ ansArr[j] 
+				+ '">'
 		}
 	}
 }
