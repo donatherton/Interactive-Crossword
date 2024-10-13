@@ -21,7 +21,6 @@ function makeGrid(gridSize) {
 function clueNumber(item) {
 	/* Fills in the clue numbers in first cell */
 	const cell = item.y * jsObj.gridSize + item.x;
-	console.log(document.querySelector('#grid-item-' + cell).querySelector('.clueNo'))
 	if (document.querySelector('#grid-item-' + cell).querySelector('.clueNo') === null) {
 		document.querySelector('#grid-item-' + cell).innerHTML += '<span class="clueNo">' 
 			+ item.clueNo 
@@ -44,8 +43,9 @@ function parseJson (item) {
 
 	const ansArr = item.solution.split('');
 
-	for (let j = 0; j < ansArr.length; j++) {		
-			if (item.dir === 'a') {
+	for (let j = 0; j < ansArr.length; j++) {
+		/* Iterates through solution putting input element in cell */
+		if (item.dir === 'a') {
 			document.querySelector('#grid-item-' 
 				+ (item.y * jsObj.gridSize 
 				+ item.x 
