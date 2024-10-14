@@ -3,19 +3,33 @@ window.onload = () => {
 	makeGrid(jsObj.gridSize);
 	jsObj.clueList.forEach(parseJson);
 	jsObj.clueList.forEach(clueNumber);
-	moveFocus();
+	//moveFocus();
+	addListeners();
 }
 
-function moveFocus() {
-	/* Moves cursor to next cell after inserting letter */
-	const inputs = document.querySelectorAll('.grid-item');
-	inputs.forEach((item) => {
-		item.addEventListener('input', () => {
+function addListeners() {
+	const items = document.querySelectorAll('.grid-item');
+	items.forEach((item) => {
+		item.addEventListener('input', (e) => {console.log(e);
+			/* Moves cursor to next cell after inserting letter */
 			const id = Number(item.id.replace('grid-item-', ''));
 			document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
 		})
 	})
+	const inputs = document.querySelectorAll('input');
+	inputs.forEach((input) => {
+		input.addEventListener('focus', () => {
+
+		deSelect();
+
+		input.style.boxShadow = '2px 2px 4px 7px #dddddd inset';
+		})
+	})
 }
+
+//function moveFocus(item) {
+//}
+
 
 function makeGrid(gridSize) {
 	/* Creates blank grid */
@@ -27,6 +41,14 @@ function makeGrid(gridSize) {
 	}
 }
 
+function deSelect() {
+	// Reset any previously selected words
+	const tmp = document.querySelectorAll('.grid-item > input')
+	tmp.forEach((item) => {
+		item.style.boxShadow  = 'none';
+	})
+	
+}
 function clueNumber(item) {
 	/* Fills in the clue numbers in first cell */
 	const cell = item.y * jsObj.gridSize + item.x;
@@ -37,28 +59,35 @@ function clueNumber(item) {
 	}
 }
 
-function selectWord(evt) {
-	let id = evt.target.getAttribute('id').split('');
+function selectWord(item, id, dir) {
+	/* Selects word in grid when cell */
+	deSelect();
+	const cell = item.y * jsObj.gridSize + item.x;
+	const wd = item.solution.length;
+	if (dir == 'a') {
+		for (let i = 0; i < wd; i++) {
+			document.querySelector('#grid-item-' + (cell) + '> input').focus();
+			document.querySelector('#grid-item-' + (cell + i) + '> input').style.boxShadow = '2px 2px 4px 7px #dddddd inset';
+		}
+	} else {
+		{
+			for (let i = 0; i < wd; i++) {
+				document.querySelector('#grid-item-' + (cell) + '> input').focus();
+				document.querySelector('#grid-item-' + (cell + i * jsObj.gridSize) + '> input').style.boxShadow = '2px 2px 4px 7px #dddddd inset';
+			}
+		}
+	}
+
+}
+
+function selectClue(e) {
+	/* Returns first cell of word when user clicks clue list */
+	let id = e.target.getAttribute('id').split('');
 	const dir = id.pop();
 	id = Number(id.join(''));
 	jsObj.clueList.forEach((item) => {
 		if (item.clueNo === id) {
-			const cell = item.y * jsObj.gridSize + item.x;
-			if (dir == 'a') {
-				const wd = item.solution.length;
-				for (let i = 0; i < wd; i++) {
-					document.querySelector('#grid-item-' + (cell) + '> input').focus();
-					document.querySelector('#grid-item-' + (cell + i)).style.border = '2px solid #666666';
-				}
-			} else {
-				{
-					const wd = item.solution.length;
-					for (let i = 0; i < wd; i++) {
-						document.querySelector('#grid-item-' + (cell) + '> input').focus();
-						document.querySelector('#grid-item-' + (cell + i * jsObj.gridSize)).style.border = '2px solid #666666';
-					}
-				}
-			}
+			selectWord(item, id, dir);
 		}
 	})	
 }
@@ -66,7 +95,7 @@ function selectWord(evt) {
 function parseJson (item) {
 	/* Fills in grid with input elements and creates clue list */
 	const clue = document.querySelector('#clues');
-	clue.addEventListener('click', selectWord);
+	clue.addEventListener('click', selectClue);
 	clue.innerHTML += 
 		'<li id="' + item.clueNo + item.dir + '">' 
 		+ '<span class="bold">' 
@@ -78,9 +107,7 @@ function parseJson (item) {
 		+ item.len 
 		+ ')</li>';	
 
-	const ansArr = item.solution.split('');
-
-	for (let j = 0; j < ansArr.length; j++) {
+	for (let j = 0; j < item.solution.length; j++) {
 		/* Iterates through solution putting input element in cell */
 		if (item.dir === 'a') {
 			document.querySelector('#grid-item-' 
@@ -88,7 +115,7 @@ function parseJson (item) {
 					+ item.x 
 					+ j))
 				.innerHTML = '<input type="text" size="1" maxlength="1" value="' 
-			//+ ansArr[j] 
+				//+ item.solution[j] 
 				+ '">'
 		} else {
 			document.querySelector('#grid-item-' 
@@ -96,7 +123,7 @@ function parseJson (item) {
 					+ item.x 
 					+ (j * jsObj.gridSize)))
 				.innerHTML = '<input type="text" size="1" maxlength="1" value="' 
-			//+ ansArr[j] 
+				//+ item.solution[j] 
 				+ '">'
 		}
 	}
