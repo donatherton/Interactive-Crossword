@@ -8,41 +8,33 @@ window.onload = () => {
 }
 
 function addListeners() {
-	const items = document.querySelectorAll('.grid-item');
-	items.forEach((item) => {
-		item.addEventListener('input', (e) => {console.log(e);
-			/* Moves cursor to next cell after inserting letter */
-			const id = Number(item.id.replace('grid-item-', ''));
-			document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
-		})
-	})
 	const inputs = document.querySelectorAll('input');
 	inputs.forEach((input) => {
 		input.addEventListener('focus', () => {
 
 		deSelect();
 
-		input.style.boxShadow = '2px 2px 4px 7px #dddddd inset';
+		input.style.boxShadow = '0 0 7px 7px #dddddd inset';
+		})
+
+		input.addEventListener('keypress', (e) => {
+			// If another letter is put in, change it immediately
+			input.value = e.key;
+			moveFocus(e.target.closest('span'))
 		})
 	})
+	document.querySelector('#clues').addEventListener('click', selectClue);
 }
 
-//function moveFocus(item) {
-//}
-
-
-function makeGrid(gridSize) {
-	/* Creates blank grid */
-	for (let i = 0; i < gridSize ** 2 ; i++) {
-		document.querySelector('#container').innerHTML += 
-			'<span class="grid-item" id="grid-item-'
-			+ i 
-			+ '"></span>'
-	}
+function moveFocus(span) {
+	// Moves cursor to next cell after inserting letter */
+	const id = Number(span.id.replace('grid-item-', ''));
+	document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
 }
+
 
 function deSelect() {
-	// Reset any previously selected words
+	// Reset any previously selected words or cells
 	const tmp = document.querySelectorAll('.grid-item > input')
 	tmp.forEach((item) => {
 		item.style.boxShadow  = 'none';
@@ -67,17 +59,16 @@ function selectWord(item, id, dir) {
 	if (dir == 'a') {
 		for (let i = 0; i < wd; i++) {
 			document.querySelector('#grid-item-' + (cell) + '> input').focus();
-			document.querySelector('#grid-item-' + (cell + i) + '> input').style.boxShadow = '2px 2px 4px 7px #dddddd inset';
+			document.querySelector('#grid-item-' + (cell + i) + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
 		}
 	} else {
 		{
 			for (let i = 0; i < wd; i++) {
 				document.querySelector('#grid-item-' + (cell) + '> input').focus();
-				document.querySelector('#grid-item-' + (cell + i * jsObj.gridSize) + '> input').style.boxShadow = '2px 2px 4px 7px #dddddd inset';
+				document.querySelector('#grid-item-' + (cell + i * jsObj.gridSize) + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
 			}
 		}
 	}
-
 }
 
 function selectClue(e) {
@@ -92,10 +83,19 @@ function selectClue(e) {
 	})	
 }
 
+function makeGrid(gridSize) {
+	/* Creates blank grid */
+	for (let i = 0; i < gridSize ** 2 ; i++) {
+		document.querySelector('#container').innerHTML += 
+			'<span class="grid-item" id="grid-item-'
+			+ i 
+			+ '"></span>'
+	}
+}
+
 function parseJson (item) {
 	/* Fills in grid with input elements and creates clue list */
 	const clue = document.querySelector('#clues');
-	clue.addEventListener('click', selectClue);
 	clue.innerHTML += 
 		'<li id="' + item.clueNo + item.dir + '">' 
 		+ '<span class="bold">' 
