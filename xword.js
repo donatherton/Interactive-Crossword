@@ -24,6 +24,17 @@ function addListeners() {
 		})
 	})
 	document.querySelector('#clues').addEventListener('click', selectClue);
+	document.querySelector('#solve').addEventListener('click', solve);
+}
+
+function solve() {
+	const ans = document.querySelectorAll('input');
+	ans.forEach((item) => {
+		item.value = '';
+	})
+	const addCSS = document.createElement('style');
+  addCSS.innerHTML = 'input::placeholder { color: black; }';
+  document.body.append(addCSS);
 }
 
 function moveFocus(span) {
@@ -95,6 +106,7 @@ function makeGrid(gridSize) {
 
 function parseJson (item) {
 	/* Fills in grid with input elements and creates clue list */
+	let solution = '';
 	const clue = document.querySelector('#clues');
 	clue.innerHTML += 
 		'<li id="' + item.clueNo + item.dir + '">' 
@@ -114,16 +126,16 @@ function parseJson (item) {
 				+ (item.y * jsObj.gridSize 
 					+ item.x 
 					+ j))
-				.innerHTML = '<input type="text" size="1" maxlength="1" value="' 
-				//+ item.solution[j] 
+				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '"value="' 
+				+ solution 
 				+ '">'
 		} else {
 			document.querySelector('#grid-item-' 
 				+ (item.y * jsObj.gridSize 
 					+ item.x 
 					+ (j * jsObj.gridSize)))
-				.innerHTML = '<input type="text" size="1" maxlength="1" value="' 
-				//+ item.solution[j] 
+				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '" value="' 
+				+ solution 
 				+ '">'
 		}
 	}
