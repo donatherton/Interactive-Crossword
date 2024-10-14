@@ -25,9 +25,11 @@ function addListeners() {
 	})
 	document.querySelector('#clues').addEventListener('click', selectClue);
 	document.querySelector('#solve').addEventListener('click', solve);
+	document.querySelector('#check').addEventListener('click', check);
 }
 
 function solve() {
+	/* Fills in grid with answers */
 	const ans = document.querySelectorAll('input');
 	ans.forEach((item) => {
 		item.value = '';
@@ -35,6 +37,33 @@ function solve() {
 	const addCSS = document.createElement('style');
 	addCSS.innerHTML = 'input::placeholder { color: black; }';
 	document.body.append(addCSS);
+}
+
+function check() {
+	/* Any wrong letters turn red */
+	jsObj.clueList.forEach((item) =>	{
+		const cell = item.y * jsObj.gridSize + item.x;
+		const wd = item.solution.length;
+		if (item.dir == 'a') {
+			for (let i = 0; i < wd; i++) {
+				const input = document.querySelector('#grid-item-' + (cell + i) + '> input');
+				if (input.value.toUpperCase() !== input.placeholder && input.value.toUpperCase() !== '') {
+					input.value = '';
+				} 
+			}
+		} else {
+
+			{
+				for (let i = 0; i < wd; i++) {
+					const input = document.querySelector('#grid-item-' + (cell + i * jsObj.gridSize) + '> input');
+					if (input.value.toUpperCase() !== input.placeholder && input.value.toUpperCase()!== '') {
+						input.value = '';
+					} 				
+				}
+			}
+		}
+
+	})
 }
 
 function moveFocus(span) {
@@ -127,17 +156,13 @@ function parseJson (item) {
 				+ (item.y * jsObj.gridSize 
 					+ item.x 
 					+ j))
-				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '"value="' 
-				+ solution 
-				+ '">'
+				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">'
 		} else {
 			document.querySelector('#grid-item-' 
 				+ (item.y * jsObj.gridSize 
 					+ item.x 
 					+ (j * jsObj.gridSize)))
-				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '" value="' 
-				+ solution 
-				+ '">'
+				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">'
 		}
 	}
 }
