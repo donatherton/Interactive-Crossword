@@ -12,9 +12,9 @@ function addListeners() {
 	inputs.forEach((input) => {
 		input.addEventListener('focus', () => {
 
-		deSelect();
+			deSelect();
 
-		input.style.boxShadow = '0 0 7px 7px #dddddd inset';
+			input.style.boxShadow = '0 0 7px 7px #dddddd inset';
 		})
 
 		input.addEventListener('keypress', (e) => {
@@ -33,8 +33,8 @@ function solve() {
 		item.value = '';
 	})
 	const addCSS = document.createElement('style');
-  addCSS.innerHTML = 'input::placeholder { color: black; }';
-  document.body.append(addCSS);
+	addCSS.innerHTML = 'input::placeholder { color: black; }';
+	document.body.append(addCSS);
 }
 
 function moveFocus(span) {
@@ -50,7 +50,7 @@ function deSelect() {
 	tmp.forEach((item) => {
 		item.style.boxShadow  = 'none';
 	})
-	
+
 }
 function clueNumber(item) {
 	/* Fills in the clue numbers in first cell */
@@ -62,7 +62,7 @@ function clueNumber(item) {
 	}
 }
 
-function selectWord(item, id, dir) {
+function selectWord(item, dir) {
 	/* Selects word in grid when cell */
 	deSelect();
 	const cell = item.y * jsObj.gridSize + item.x;
@@ -88,8 +88,9 @@ function selectClue(e) {
 	const dir = id.pop();
 	id = Number(id.join(''));
 	jsObj.clueList.forEach((item) => {
-		if (item.clueNo === id) {
-			selectWord(item, id, dir);
+		if (item.clueNo === id && item.dir === dir) {
+			selectWord(item, dir);
+			document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
 		}
 	})	
 }
@@ -140,4 +141,3 @@ function parseJson (item) {
 		}
 	}
 }
-
