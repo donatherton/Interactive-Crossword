@@ -8,6 +8,20 @@ window.onload = () => {
 }
 let wordList = [];
 
+function findWord(cell) {
+	/* Finds word from  */
+	let thisWord = [];
+	wordList.forEach((word) => {
+		//const x = Number(cell.closest('span').id.replace('grid-item-', ''));
+		word.forEach((letter) => {
+			if (letter[1] === cell) {
+				thisWord.push(word);
+			}
+		})
+	})
+	return [thisWord];
+}
+
 function addListeners() {
 	const inputs = document.querySelectorAll('input');
 	inputs.forEach((input) => {
@@ -15,7 +29,9 @@ function addListeners() {
 
 			deSelect();
 
-			input.style.boxShadow = '0 0 7px 7px #dddddd inset';
+			const cell = Number(input.closest('span').getAttribute('id').replace('grid-item-', ''));
+			const word = findWord(cell);
+			selectWord(cell);
 		})
 
 		input.addEventListener('keypress', (e) => {
@@ -55,11 +71,14 @@ function check() {
 function moveFocus(span) {
 	// Moves cursor to next cell after inserting letter */
 	const id = Number(span.id.replace('grid-item-', ''));
-	wordList.forEach((item) => {
-		if (id === item[0][1]) {
-			document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
-		}
-	})
+	document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
+
+	//const id = Number(span.id.replace('grid-item-', ''));
+	//wordList.forEach((item) => {
+	//	if (id === item[0][1]) {
+	//		document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
+	//	}
+	//})
 }
 
 function deSelect() {
@@ -80,24 +99,21 @@ function clueNumber(item) {
 	}
 }
 
-function selectWord(item, dir) {
+function selectWord(cell, dir) {
 	/* Selects word in grid when clue clicked */
 	deSelect();
-	const cell = item.y * jsObj.gridSize + item.x;
-	const wd = item.solution.length;
-	if (dir == 'a') {
-		for (let i = 0; i < wd; i++) {
-			document.querySelector('#grid-item-' + (cell) + '> input').focus();
-			document.querySelector('#grid-item-' + (cell + i) + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
-		}
-	} else {
-		{
-			for (let i = 0; i < wd; i++) {
-				document.querySelector('#grid-item-' + (cell) + '> input').focus();
-				document.querySelector('#grid-item-' + (cell + i * jsObj.gridSize) + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
-			}
-		}
-	}
+	const word = findWord(cell);
+	if (dir === undefined) { dir = 'a' };
+	if (dir === 'a') { dir = 0 }
+	else { dir = 1 };
+	/* Seems a bit of a hacky way to do it.
+	 * Goes for across first, if there's 2 words in array (across and down) go for 2nd unless
+	 * there's only down */
+	if (word[0][dir] === undefined) { dir = 0 };
+	//document.querySelector('#grid-item-' + word[0][dir][0][1] + ' > input').focus();
+	word[0][dir].forEach((letter) => {
+		document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';	
+	})
 }
 
 function selectClue(e) {
@@ -108,7 +124,8 @@ function selectClue(e) {
 	id = Number(id.join(''));
 	jsObj.clueList.forEach((item) => {
 		if (item.clueNo === id && item.dir === dir) {
-			selectWord(item, dir);
+			const cell = item.y * jsObj.gridSize + item.x;
+			selectWord(cell, dir);
 			document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
 		}
 	})	
@@ -148,8 +165,8 @@ function parseJson (item) {
 					+ item.x 
 					+ j))
 				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">';
-				word.push([item.solution[j], (item.y * jsObj.gridSize 
-					+ item.x + j )]);
+			word.push([item.solution[j], (item.y * jsObj.gridSize 
+				+ item.x + j )]);
 
 		} else {
 			document.querySelector('#grid-item-' 
@@ -157,10 +174,11 @@ function parseJson (item) {
 					+ item.x 
 					+ (j * jsObj.gridSize)))
 				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">'
-				word.push([item.solution[j], (item.y * jsObj.gridSize 
-					+ item.x 
-					+ (j * jsObj.gridSize))]);
+			word.push([item.solution[j], (item.y * jsObj.gridSize 
+				+ item.x 
+				+ (j * jsObj.gridSize))]);
 		}
 	}
+	//word.push(item.dir);
 	wordList.push(word);
 }
