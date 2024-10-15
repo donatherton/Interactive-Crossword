@@ -9,7 +9,7 @@ window.onload = () => {
 let wordList = [];
 
 function findWord(cell) {
-	/* Finds word from  */
+	/* Finds word from cell */
 	let thisWord = [];
 	wordList.forEach((word) => {
 		//const x = Number(cell.closest('span').id.replace('grid-item-', ''));
@@ -25,7 +25,7 @@ function findWord(cell) {
 function addListeners() {
 	const inputs = document.querySelectorAll('input');
 	inputs.forEach((input) => {
-		input.addEventListener('focus', () => {
+		input.addEventListener('click', () => {
 
 			deSelect();
 
@@ -110,7 +110,7 @@ function selectWord(cell, dir) {
 	 * Goes for across first, if there's 2 words in array (across and down) go for 2nd unless
 	 * there's only down */
 	if (word[0][dir] === undefined) { dir = 0 };
-	//document.querySelector('#grid-item-' + word[0][dir][0][1] + ' > input').focus();
+	document.querySelector('#grid-item-' + word[0][dir][0][1] + ' > input').focus();
 	word[0][dir].forEach((letter) => {
 		document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';	
 	})
