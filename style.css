@@ -51,7 +51,7 @@ input {
     width: 90vw;
     max-width: 500px;
     max-height: 500px;
-    margin: 0 auto;
+    margin: 20px auto;
     list-style: none;
 }
 
@@ -63,7 +63,7 @@ li {
 #currentClue, #button {
     width: 90vw;
     max-width: 500px;
-    margin: 0.5em auto;
+    margin: 5px auto;
     height: 1em;
     font-weight: bold;
 }
@@ -84,12 +84,13 @@ span {
 }
 
 button {
-    margin: 0 auto;
+    margin: 0 1em;
     cursor: pointer;
 
 }
 
 ::placeholder {
   color: transparent;
+  opacity: 1;
 }
 

@@ -6,6 +6,7 @@ window.onload = () => {
 	//moveFocus();
 	addListeners();
 }
+let wordList = [];
 
 function addListeners() {
 	const inputs = document.querySelectorAll('input');
@@ -30,48 +31,36 @@ function addListeners() {
 
 function solve() {
 	/* Fills in grid with answers */
-	const ans = document.querySelectorAll('input');
-	ans.forEach((item) => {
-		item.value = '';
+	wordList.forEach((item) => {
+		item.forEach((letter) => {
+			const answer  = '#grid-item-' + letter[1] + ' > input';
+			document.querySelector(answer).value = letter[0];
+		})
 	})
-	const addCSS = document.createElement('style');
-	addCSS.innerHTML = 'input::placeholder { color: black; }';
-	document.body.append(addCSS);
 }
 
 function check() {
-	/* Any wrong letters turn red */
-	jsObj.clueList.forEach((item) =>	{
-		const cell = item.y * jsObj.gridSize + item.x;
-		const wd = item.solution.length;
-		if (item.dir == 'a') {
-			for (let i = 0; i < wd; i++) {
-				const input = document.querySelector('#grid-item-' + (cell + i) + '> input');
-				if (input.value.toUpperCase() !== input.placeholder && input.value.toUpperCase() !== '') {
-					input.value = '';
-				} 
+	/* Deletes wrong letters */
+	wordList.forEach((item) => {
+		item.forEach((letter) => {
+			const val = document.querySelector('#grid-item-' + letter[1] + ' > input');
+			const ans = letter[0];
+			if (val.value.toUpperCase() !== ans && val.value !== '') {
+				val.value = '';		
 			}
-		} else {
-
-			{
-				for (let i = 0; i < wd; i++) {
-					const input = document.querySelector('#grid-item-' + (cell + i * jsObj.gridSize) + '> input');
-					if (input.value.toUpperCase() !== input.placeholder && input.value.toUpperCase()!== '') {
-						input.value = '';
-					} 				
-				}
-			}
-		}
-
+		})
 	})
 }
 
 function moveFocus(span) {
 	// Moves cursor to next cell after inserting letter */
 	const id = Number(span.id.replace('grid-item-', ''));
-	document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
+	wordList.forEach((item) => {
+		if (id === item[0][1]) {
+			document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
+		}
+	})
 }
-
 
 function deSelect() {
 	// Reset any previously selected words or cells
@@ -92,7 +81,7 @@ function clueNumber(item) {
 }
 
 function selectWord(item, dir) {
-	/* Selects word in grid when cell */
+	/* Selects word in grid when clue clicked */
 	deSelect();
 	const cell = item.y * jsObj.gridSize + item.x;
 	const wd = item.solution.length;
@@ -112,7 +101,8 @@ function selectWord(item, dir) {
 }
 
 function selectClue(e) {
-	/* Returns first cell of word when user clicks clue list */
+	/* Returns first cell of word when user clicks clue list 
+		and prints clue in currentClue div */
 	let id = e.target.getAttribute('id').split('');
 	const dir = id.pop();
 	id = Number(id.join(''));
@@ -137,6 +127,7 @@ function makeGrid(gridSize) {
 function parseJson (item) {
 	/* Fills in grid with input elements and creates clue list */
 	let solution = '';
+	let word = [];
 	const clue = document.querySelector('#clues');
 	clue.innerHTML += 
 		'<li id="' + item.clueNo + item.dir + '">' 
@@ -146,7 +137,7 @@ function parseJson (item) {
 		+ ': </span>' 
 		+ item.clue 
 		+ ' (' 
-		+ item.len 
+		+ item.solution.length 
 		+ ')</li>';	
 
 	for (let j = 0; j < item.solution.length; j++) {
@@ -156,13 +147,20 @@ function parseJson (item) {
 				+ (item.y * jsObj.gridSize 
 					+ item.x 
 					+ j))
-				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">'
+				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">';
+				word.push([item.solution[j], (item.y * jsObj.gridSize 
+					+ item.x + j )]);
+
 		} else {
 			document.querySelector('#grid-item-' 
 				+ (item.y * jsObj.gridSize 
 					+ item.x 
 					+ (j * jsObj.gridSize)))
 				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">'
+				word.push([item.solution[j], (item.y * jsObj.gridSize 
+					+ item.x 
+					+ (j * jsObj.gridSize))]);
 		}
 	}
+	wordList.push(word);
 }
