@@ -7,6 +7,7 @@ window.onload = () => {
 	addListeners();
 }
 let wordList = [];
+let currentWord = [];
 
 function findWord(cell) {
 	/* Finds word from  */
@@ -68,8 +69,10 @@ function check() {
 
 function moveFocus(span) {
 	// Moves cursor to next cell after inserting letter */
-	const id = Number(span.id.replace('grid-item-', ''));
-	document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
+	const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
+	const currentLetter = currentWord.find((letter) => letter === cell);
+	const diff = currentWord[1] - currentWord[0]; // Across or down?
+	document.querySelector('#grid-item-' + (cell + diff) + ' > input').focus();
 
 	//const id = Number(span.id.replace('grid-item-', ''));
 	//wordList.forEach((item) => {
@@ -100,6 +103,7 @@ function clueNumber(item) {
 function selectWord(cell, dir) {
 	/* Selects word in grid when clue clicked */
 	deSelect();
+	currentWord = [];
 	const word = findWord(cell);
 	if (dir === undefined) { dir = 'a' };
 	if (dir === 'a') { dir = 0 }
@@ -110,7 +114,8 @@ function selectWord(cell, dir) {
 	
 	if (word[dir] === undefined) { dir = 0 };
 	word[dir].forEach((letter) => {
-		document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';	
+		document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
+		currentWord.push(letter[1]);
 	})
 }
 
