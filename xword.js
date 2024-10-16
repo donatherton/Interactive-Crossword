@@ -24,7 +24,7 @@ function findWord(cell) {
 function addListeners() {
 	const inputs = document.querySelectorAll('input');
 	inputs.forEach((input) => {
-		input.addEventListener('focus', () => {
+		input.addEventListener('click', () => {
 
 			deSelect();
 
@@ -107,6 +107,7 @@ function selectWord(cell, dir) {
 	/* Seems a bit of a hacky way to do it.
 	 * Goes for across first, if there's 2 words in array (across and down) go for 2nd unless
 	 * there's only down */
+	
 	if (word[dir] === undefined) { dir = 0 };
 	word[dir].forEach((letter) => {
 		document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';	
@@ -181,6 +182,5 @@ function parseJson (item) {
 				+ (j * jsObj.gridSize))]);
 		}
 	}
-	//word.push(item.dir);
 	wordList.push(word);
 }
