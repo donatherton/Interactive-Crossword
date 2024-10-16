@@ -12,14 +12,13 @@ function findWord(cell) {
 	/* Finds word from  */
 	let thisWord = [];
 	wordList.forEach((word) => {
-		//const x = Number(cell.closest('span').id.replace('grid-item-', ''));
 		word.forEach((letter) => {
 			if (letter[1] === cell) {
 				thisWord.push(word);
 			}
 		})
 	})
-	return [thisWord];
+	return thisWord;
 }
 
 function addListeners() {
@@ -30,7 +29,6 @@ function addListeners() {
 			deSelect();
 
 			const cell = Number(input.closest('span').getAttribute('id').replace('grid-item-', ''));
-			const word = findWord(cell);
 			selectWord(cell);
 		})
 
@@ -109,9 +107,8 @@ function selectWord(cell, dir) {
 	/* Seems a bit of a hacky way to do it.
 	 * Goes for across first, if there's 2 words in array (across and down) go for 2nd unless
 	 * there's only down */
-	if (word[0][dir] === undefined) { dir = 0 };
-	//document.querySelector('#grid-item-' + word[0][dir][0][1] + ' > input').focus();
-	word[0][dir].forEach((letter) => {
+	if (word[dir] === undefined) { dir = 0 };
+	word[dir].forEach((letter) => {
 		document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';	
 	})
 }
@@ -126,13 +123,18 @@ function selectClue(e) {
 		if (item.clueNo === id && item.dir === dir) {
 			const cell = item.y * jsObj.gridSize + item.x;
 			selectWord(cell, dir);
-			document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
+			//document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
+			document.querySelector('#grid-item-' + cell + ' > input').focus();
 		}
 	})	
 }
 
 function makeGrid(gridSize) {
 	/* Creates blank grid */
+	document.querySelector('#container').style.gridTemplate += 'repeat(' 
+		+ jsObj.gridSize 
+		+ ', 1fr)/repeat(' 
+		+ jsObj.gridSize + ', 1fr)';
 	for (let i = 0; i < gridSize ** 2 ; i++) {
 		document.querySelector('#container').innerHTML += 
 			'<span class="grid-item" id="grid-item-'
@@ -164,7 +166,7 @@ function parseJson (item) {
 				+ (item.y * jsObj.gridSize 
 					+ item.x 
 					+ j))
-				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">';
+				.innerHTML = '<input type="text" size="1" maxlength="1">';
 			word.push([item.solution[j], (item.y * jsObj.gridSize 
 				+ item.x + j )]);
 
@@ -173,7 +175,7 @@ function parseJson (item) {
 				+ (item.y * jsObj.gridSize 
 					+ item.x 
 					+ (j * jsObj.gridSize)))
-				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">'
+				.innerHTML = '<input type="text" size="1" maxlength="1">'
 			word.push([item.solution[j], (item.y * jsObj.gridSize 
 				+ item.x 
 				+ (j * jsObj.gridSize))]);
