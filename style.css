@@ -60,6 +60,7 @@ input {
 }
 
 li {
+    list-style: none;
     cursor: pointer;
     margin: 10px;
 }
@@ -67,7 +68,7 @@ li {
 #currentClue, #button {
     width: 90vw;
     max-width: 500px;
-    margin: 5px auto;
+    margin: 0 10px 10px 10px ;
     height: 1em;
     font-weight: bold;
 }

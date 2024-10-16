@@ -11,7 +11,7 @@ let wordList = [];
 let currentWord = [];
 
 function findWord(cell) {
-  /* Finds word from  */
+  /* Finds word from cell */
   let thisWord = [];
   wordList.forEach((word) => {
     word.forEach((letter) => {
@@ -69,7 +69,7 @@ function check() {
 }
 
 function moveFocus(span) {
-  // Moves cursor to next cell after inserting letter */
+  /* Moves cursor to next cell after inserting letter */
   const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
   const currentLetter = currentWord.find((letter) => letter === cell);
   const diff = currentWord[1] - currentWord[0]; // Across or down?
@@ -77,7 +77,7 @@ function moveFocus(span) {
 }
 
 function deSelect() {
-  // Reset any previously selected words or cells
+  /* Reset any previously selected words or cells */
   const tmp = document.querySelectorAll('.grid-item > input')
   tmp.forEach((item) => {
     item.style.boxShadow  = 'none';
@@ -98,6 +98,7 @@ function selectWord(cell, dir) {
   /* Selects word in grid when clue clicked */
   deSelect();
   currentWord = [];
+  let clue = [];
   const word = findWord(cell);
   if (dir === undefined) { dir = 'a' };
   if (dir === 'a') { dir = 0 }
@@ -110,12 +111,19 @@ function selectWord(cell, dir) {
   word[dir].forEach((letter) => {
     document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
     currentWord.push(letter[1]);
+    clue.push(letter[0]);
+  })
+  // Puts clue in curentClue div
+  clue = clue.join('');
+  jsObj.clueList.forEach((item) => {
+    if (item.solution === clue) {
+      document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
+    }
   })
 }
 
 function selectClue(e) {
-  /* Returns first cell of word when user clicks clue list 
-    and prints clue in currentClue div */
+  /* Returns first cell of word when user clicks clue list */
   let id = e.target.getAttribute('id').split('');
   const dir = id.pop();
   id = Number(id.join(''));
@@ -123,7 +131,6 @@ function selectClue(e) {
     if (item.clueNo === id && item.dir === dir) {
       const cell = item.y * jsObj.gridSize + item.x;
       selectWord(cell, dir);
-      //document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
       document.querySelector('#grid-item-' + cell + ' > input').focus();
     }
   })  
