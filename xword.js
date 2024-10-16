@@ -3,7 +3,6 @@ window.onload = () => {
   makeGrid(jsObj.gridSize);
   jsObj.clueList.forEach(parseJson);
   jsObj.clueList.forEach(clueNumber);
-  //moveFocus();
   addListeners();
 }
 
@@ -47,12 +46,14 @@ function addListeners() {
 
 function solve() {
   /* Fills in grid with answers */
+  if (confirm('Reveal all solutions?')) {
   wordList.forEach((item) => {
     item.forEach((letter) => {
       const answer = '#grid-item-' + letter[1] + ' > input';
       document.querySelector(answer).value = letter[0];
     })
   })
+  }
 }
 
 function check() {
@@ -141,7 +142,7 @@ function makeGrid(gridSize) {
   document.querySelector('#xword-grid').style.gridTemplate += 'repeat(' 
     + jsObj.gridSize 
     + ', 1fr)/repeat('
-		+ jsObj.gridSize + ', 1fr)';
+    + jsObj.gridSize + ', 1fr)';
   for (let i = 0; i < gridSize ** 2 ; i++) {
     document.querySelector('#xword-grid').innerHTML += 
       '<span class="grid-item" id="grid-item-'
