@@ -23,13 +23,18 @@ body {
 }
 
 #container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#xword-grid {
     display: grid;
     width: 90vw;
     height: 90vw;
     max-width: 500px;
     max-height: 500px;
-    /*grid-template: repeat(8, 1fr)/repeat(8, 1fr);*/
-    margin:  20px auto;
+    margin:  20px ;
 }
 
 .grid-item {
@@ -50,8 +55,7 @@ input {
 #clues {
     width: 90vw;
     max-width: 500px;
-    max-height: 500px;
-    margin: 20px auto;
+    margin: 20px ;
     list-style: none;
 }
 
@@ -88,9 +92,3 @@ button {
     cursor: pointer;
 
 }
-
-::placeholder {
-  color: transparent;
-  opacity: 1;
-}
-
