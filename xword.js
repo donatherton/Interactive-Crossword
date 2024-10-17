@@ -75,7 +75,12 @@ function moveFocus(span) {
   const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
   currentWord.find((letter) => letter === cell);
   const diff = currentWord[1] - currentWord[0]; // Across or down?
-  document.querySelector('#grid-item-' + (cell + diff) + ' > input').focus();
+  try {
+    document.querySelector('#grid-item-' + (cell + diff) + ' > input').focus();
+  }
+  catch(e) {
+    console.log('End of word');
+  }
 }
 
 function deSelect() {
