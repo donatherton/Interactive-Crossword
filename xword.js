@@ -1,4 +1,5 @@
 'use strict'
+
 window.onload = () => {
   makeGrid(jsObj.gridSize);
   jsObj.clueList.forEach(parseJson);
@@ -140,9 +141,9 @@ function selectClue(e) {
 function makeGrid(gridSize) {
   /* Creates blank grid */
   document.querySelector('#xword-grid').style.gridTemplate += 'repeat(' 
-    + jsObj.gridSize 
+    + gridSize 
     + ', 1fr)/repeat('
-    + jsObj.gridSize + ', 1fr)';
+    + gridSize + ', 1fr)';
   for (let i = 0; i < gridSize ** 2 ; i++) {
     document.querySelector('#xword-grid').innerHTML += 
       '<span class="grid-item" id="grid-item-'
