@@ -1,12 +1,14 @@
 'use strict'
 
 window.onload = () => {
-  makeGrid(jsObj.gridSize);
-  jsObj.clueList.forEach(parseJson);
-  jsObj.clueList.forEach(clueNumber);
+  data = JSON.parse(document.getElementById('data').textContent);
+  makeGrid(data.gridSize);
+  data.clueList.forEach(parseJson);
+  data.clueList.forEach(clueNumber);
   addListeners();
 }
 
+let data = {};
 let wordList = [];
 let currentWord = [];
 
@@ -27,9 +29,7 @@ function addListeners() {
   const inputs = document.querySelectorAll('input');
   inputs.forEach((input) => {
     input.addEventListener('click', () => {
-
       deSelect();
-
       const cell = Number(input.closest('span').getAttribute('id').replace('grid-item-', ''));
       selectWord(cell);
     })
@@ -48,12 +48,12 @@ function addListeners() {
 function solve() {
   /* Fills in grid with answers */
   if (confirm('Reveal all solutions?')) {
-  wordList.forEach((item) => {
-    item.forEach((letter) => {
-      const answer = '#grid-item-' + letter[1] + ' > input';
-      document.querySelector(answer).value = letter[0];
+    wordList.forEach((item) => {
+      item.forEach((letter) => {
+        const answer = '#grid-item-' + letter[1] + ' > input';
+        document.querySelector(answer).value = letter[0];
+      })
     })
-  })
   }
 }
 
@@ -73,7 +73,7 @@ function check() {
 function moveFocus(span) {
   /* Moves cursor to next cell after inserting letter */
   const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
-  const currentLetter = currentWord.find((letter) => letter === cell);
+  currentWord.find((letter) => letter === cell);
   const diff = currentWord[1] - currentWord[0]; // Across or down?
   document.querySelector('#grid-item-' + (cell + diff) + ' > input').focus();
 }
@@ -88,9 +88,11 @@ function deSelect() {
 }
 function clueNumber(item) {
   /* Fills in the clue numbers in first cell */
-  const cell = item.y * jsObj.gridSize + item.x;
-  if (document.querySelector('#grid-item-' + cell).querySelector('.clueNo') === null) {
-    document.querySelector('#grid-item-' + cell).innerHTML += '<span class="clueNo">' 
+  const cell = item.y * data.gridSize + item.x;
+  if (document.querySelector('#grid-item-' 
+    + cell).querySelector('.clueNo') === null) {
+    document.querySelector('#grid-item-' 
+      + cell).innerHTML += '<span class="clueNo">' 
       + item.clueNo 
       + '</span>';
   }
@@ -117,7 +119,7 @@ function selectWord(cell, dir) {
   })
   // Puts clue in curentClue div
   clue = clue.join('');
-  jsObj.clueList.forEach((item) => {
+  data.clueList.forEach((item) => {
     if (item.solution === clue) {
       document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
     }
@@ -129,9 +131,9 @@ function selectClue(e) {
   let id = e.target.getAttribute('id').split('');
   const dir = id.pop();
   id = Number(id.join(''));
-  jsObj.clueList.forEach((item) => {
+  data.clueList.forEach((item) => {
     if (item.clueNo === id && item.dir === dir) {
-      const cell = item.y * jsObj.gridSize + item.x;
+      const cell = item.y * data.gridSize + item.x;
       selectWord(cell, dir);
       document.querySelector('#grid-item-' + cell + ' > input').focus();
     }
@@ -154,7 +156,6 @@ function makeGrid(gridSize) {
 
 function parseJson (item) {
   /* Fills in grid with input elements and creates clue list */
-  let solution = '';
   let word = [];
   const clue = document.querySelector('#clue-list');
   clue.innerHTML += 
@@ -172,22 +173,22 @@ function parseJson (item) {
     /* Iterates through solution putting input element in cell */
     if (item.dir === 'a') {
       document.querySelector('#grid-item-' 
-        + (item.y * jsObj.gridSize 
+        + (item.y * data.gridSize 
           + item.x 
           + j))
         .innerHTML = '<input type="text" size="1" maxlength="1">';
-      word.push([item.solution[j], (item.y * jsObj.gridSize 
+      word.push([item.solution[j], (item.y * data.gridSize 
         + item.x + j )]);
 
     } else {
       document.querySelector('#grid-item-' 
-        + (item.y * jsObj.gridSize 
+        + (item.y * data.gridSize 
           + item.x 
-          + (j * jsObj.gridSize)))
+          + (j * data.gridSize)))
         .innerHTML = '<input type="text" size="1" maxlength="1">'
-      word.push([item.solution[j], (item.y * jsObj.gridSize 
+      word.push([item.solution[j], (item.y * data.gridSize 
         + item.x 
-        + (j * jsObj.gridSize))]);
+        + (j * data.gridSize))]);
     }
   }
   wordList.push(word);
