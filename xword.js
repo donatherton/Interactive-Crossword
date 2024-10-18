@@ -1,185 +1,200 @@
 'use strict'
+
 window.onload = () => {
-	makeGrid(jsObj.gridSize);
-	jsObj.clueList.forEach(parseJson);
-	jsObj.clueList.forEach(clueNumber);
-	//moveFocus();
-	addListeners();
+  data = JSON.parse(document.getElementById('data').textContent);
+  makeGrid(data.gridSize);
+  data.clueList.forEach(parseJson);
+  data.clueList.forEach(clueNumber);
+  addListeners();
 }
+
+let data = {};
 let wordList = [];
+let currentWord = [];
 
 function findWord(cell) {
-	/* Finds word from cell */
-	let thisWord = [];
-	wordList.forEach((word) => {
-		//const x = Number(cell.closest('span').id.replace('grid-item-', ''));
-		word.forEach((letter) => {
-			if (letter[1] === cell) {
-				thisWord.push(word);
-			}
-		})
-	})
-	return [thisWord];
+  /* Finds word from cell */
+  let thisWord = [];
+  wordList.forEach((word) => {
+    word.forEach((letter) => {
+      if (letter[1] === cell) {
+        thisWord.push(word);
+      }
+    })
+  })
+  return thisWord;
 }
 
 function addListeners() {
-	const inputs = document.querySelectorAll('input');
-	inputs.forEach((input) => {
-		input.addEventListener('click', () => {
+  const inputs = document.querySelectorAll('input');
+  inputs.forEach((input) => {
+    input.addEventListener('click', () => {
+      deSelect();
+      const cell = Number(input.closest('span').getAttribute('id').replace('grid-item-', ''));
+      selectWord(cell);
+    })
 
-			deSelect();
-
-			const cell = Number(input.closest('span').getAttribute('id').replace('grid-item-', ''));
-			const word = findWord(cell);
-			selectWord(cell);
-		})
-
-		input.addEventListener('keypress', (e) => {
-			// If another letter is put in, change it immediately
-			input.value = e.key;
-			moveFocus(e.target.closest('span'))
-		})
-	})
-	document.querySelector('#clues').addEventListener('click', selectClue);
-	document.querySelector('#solve').addEventListener('click', solve);
-	document.querySelector('#check').addEventListener('click', check);
+    input.addEventListener('keypress', (e) => {
+      // If another letter is put in, change it immediately
+      input.value = e.key;
+      moveFocus(e.target.closest('span'))
+    })
+  })
+  document.querySelector('#clues').addEventListener('click', selectClue);
+  document.querySelector('#solve').addEventListener('click', solve);
+  document.querySelector('#check').addEventListener('click', check);
 }
 
 function solve() {
-	/* Fills in grid with answers */
-	wordList.forEach((item) => {
-		item.forEach((letter) => {
-			const answer  = '#grid-item-' + letter[1] + ' > input';
-			document.querySelector(answer).value = letter[0];
-		})
-	})
+  /* Fills in grid with answers */
+  if (confirm('Reveal all solutions?')) {
+    wordList.forEach((item) => {
+      item.forEach((letter) => {
+        const answer = '#grid-item-' + letter[1] + ' > input';
+        document.querySelector(answer).value = letter[0];
+      })
+    })
+  }
 }
 
 function check() {
-	/* Deletes wrong letters */
-	wordList.forEach((item) => {
-		item.forEach((letter) => {
-			const val = document.querySelector('#grid-item-' + letter[1] + ' > input');
-			const ans = letter[0];
-			if (val.value.toUpperCase() !== ans && val.value !== '') {
-				val.value = '';		
-			}
-		})
-	})
+  /* Deletes wrong letters */
+  wordList.forEach((item) => {
+    item.forEach((letter) => {
+      const val = document.querySelector('#grid-item-' + letter[1] + ' > input');
+      const ans = letter[0];
+      if (val.value.toUpperCase() !== ans && val.value !== '') {
+        val.value = '';    
+      }
+    })
+  })
 }
 
 function moveFocus(span) {
-	// Moves cursor to next cell after inserting letter */
-	const id = Number(span.id.replace('grid-item-', ''));
-	document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
-
-	//const id = Number(span.id.replace('grid-item-', ''));
-	//wordList.forEach((item) => {
-	//	if (id === item[0][1]) {
-	//		document.querySelector('#grid-item-' + (id + 1) + ' > input').focus();
-	//	}
-	//})
+  /* Moves cursor to next cell after inserting letter */
+  const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
+  currentWord.find((letter) => letter === cell);
+  const diff = currentWord[1] - currentWord[0]; // Across or down?
+  try {
+    document.querySelector('#grid-item-' + (cell + diff) + ' > input').focus();
+  }
+  catch(e) {
+    console.log('End of word');
+  }
 }
 
 function deSelect() {
-	// Reset any previously selected words or cells
-	const tmp = document.querySelectorAll('.grid-item > input')
-	tmp.forEach((item) => {
-		item.style.boxShadow  = 'none';
-	})
+  /* Reset any previously selected words or cells */
+  const tmp = document.querySelectorAll('.grid-item > input')
+  tmp.forEach((item) => {
+    item.style.boxShadow  = 'none';
+  })
 
 }
 function clueNumber(item) {
-	/* Fills in the clue numbers in first cell */
-	const cell = item.y * jsObj.gridSize + item.x;
-	if (document.querySelector('#grid-item-' + cell).querySelector('.clueNo') === null) {
-		document.querySelector('#grid-item-' + cell).innerHTML += '<span class="clueNo">' 
-			+ item.clueNo 
-			+ '</span>';
-	}
+  /* Fills in the clue numbers in first cell */
+  const cell = item.y * data.gridSize + item.x;
+  if (document.querySelector('#grid-item-' 
+    + cell).querySelector('.clueNo') === null) {
+    document.querySelector('#grid-item-' 
+      + cell).innerHTML += '<span class="clueNo">' 
+      + item.clueNo 
+      + '</span>';
+  }
 }
 
 function selectWord(cell, dir) {
-	/* Selects word in grid when clue clicked */
-	deSelect();
-	const word = findWord(cell);
-	if (dir === undefined) { dir = 'a' };
-	if (dir === 'a') { dir = 0 }
-	else { dir = 1 };
-	/* Seems a bit of a hacky way to do it.
-	 * Goes for across first, if there's 2 words in array (across and down) go for 2nd unless
-	 * there's only down */
-	if (word[0][dir] === undefined) { dir = 0 };
-	//document.querySelector('#grid-item-' + word[0][dir][0][1] + ' > input').focus();
-	word[0][dir].forEach((letter) => {
-		document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';	
-	})
+  /* Selects word in grid when clue clicked */
+  deSelect();
+  currentWord = [];
+  let clue = [];
+  const word = findWord(cell);
+  if (dir === undefined) { dir = 'a' };
+  if (dir === 'a') { dir = 0 }
+  else { dir = 1 };
+  /* Seems a bit of a hacky way to do it.
+   * Goes for across first, if there's 2 words in array (across and down) go for 2nd unless
+   * there's only down */
+
+  if (word[dir] === undefined) { dir = 0 };
+  word[dir].forEach((letter) => {
+    document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
+    currentWord.push(letter[1]);
+    clue.push(letter[0]);
+  })
+  // Puts clue in curentClue div
+  clue = clue.join('');
+  data.clueList.forEach((item) => {
+    if (item.solution === clue) {
+      document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
+    }
+  })
 }
 
 function selectClue(e) {
-	/* Returns first cell of word when user clicks clue list 
-		and prints clue in currentClue div */
-	let id = e.target.getAttribute('id').split('');
-	const dir = id.pop();
-	id = Number(id.join(''));
-	jsObj.clueList.forEach((item) => {
-		if (item.clueNo === id && item.dir === dir) {
-			const cell = item.y * jsObj.gridSize + item.x;
-			selectWord(cell, dir);
-			document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
-document.querySelector('#grid-item-' + cell + ' > input').focus();
-		}
-	})	
+  /* Returns first cell of word when user clicks clue list */
+  let id = e.target.getAttribute('id').split('');
+  const dir = id.pop();
+  id = Number(id.join(''));
+  data.clueList.forEach((item) => {
+    if (item.clueNo === id && item.dir === dir) {
+      const cell = item.y * data.gridSize + item.x;
+      selectWord(cell, dir);
+      document.querySelector('#grid-item-' + cell + ' > input').focus();
+    }
+  })  
 }
 
 function makeGrid(gridSize) {
-	/* Creates blank grid */
-	for (let i = 0; i < gridSize ** 2 ; i++) {
-		document.querySelector('#container').innerHTML += 
-			'<span class="grid-item" id="grid-item-'
-			+ i 
-			+ '"></span>'
-	}
+  /* Creates blank grid */
+  document.querySelector('#xword-grid').style.gridTemplate += 'repeat(' 
+    + gridSize 
+    + ', 1fr)/repeat('
+    + gridSize + ', 1fr)';
+  for (let i = 0; i < gridSize ** 2 ; i++) {
+    document.querySelector('#xword-grid').innerHTML += 
+      '<span class="grid-item" id="grid-item-'
+      + i 
+      + '"></span>'
+  }
 }
 
 function parseJson (item) {
-	/* Fills in grid with input elements and creates clue list */
-	let solution = '';
-	let word = [];
-	const clue = document.querySelector('#clues');
-	clue.innerHTML += 
-		'<li id="' + item.clueNo + item.dir + '">' 
-		+ '<span class="bold">' 
-		+ item.clueNo 
-		+ item.dir
-		+ ': </span>' 
-		+ item.clue 
-		+ ' (' 
-		+ item.solution.length 
-		+ ')</li>';	
+  /* Fills in grid with input elements and creates clue list */
+  let word = [];
+  const clue = document.querySelector('#clue-list');
+  clue.innerHTML += 
+    '<li id="' + item.clueNo + item.dir + '">' 
+    + '<span class="bold">' 
+    + item.clueNo 
+    + item.dir
+    + ': </span>' 
+    + item.clue 
+    + ' (' 
+    + item.solution.length 
+    + ')</li>';  
 
-	for (let j = 0; j < item.solution.length; j++) {
-		/* Iterates through solution putting input element in cell */
-		if (item.dir === 'a') {
-			document.querySelector('#grid-item-' 
-				+ (item.y * jsObj.gridSize 
-					+ item.x 
-					+ j))
-				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">';
-			word.push([item.solution[j], (item.y * jsObj.gridSize 
-				+ item.x + j )]);
+  for (let j = 0; j < item.solution.length; j++) {
+    /* Iterates through solution putting input element in cell */
+    if (item.dir === 'a') {
+      document.querySelector('#grid-item-' 
+        + (item.y * data.gridSize 
+          + item.x 
+          + j))
+        .innerHTML = '<input type="text" size="1" maxlength="1">';
+      word.push([item.solution[j], (item.y * data.gridSize 
+        + item.x + j )]);
 
-		} else {
-			document.querySelector('#grid-item-' 
-				+ (item.y * jsObj.gridSize 
-					+ item.x 
-					+ (j * jsObj.gridSize)))
-				.innerHTML = '<input type="text" size="1" maxlength="1" placeholder = "' + item.solution[j] + '">'
-			word.push([item.solution[j], (item.y * jsObj.gridSize 
-				+ item.x 
-				+ (j * jsObj.gridSize))]);
-		}
-	}
-	//word.push(item.dir);
-	wordList.push(word);
+    } else {
+      document.querySelector('#grid-item-' 
+        + (item.y * data.gridSize 
+          + item.x 
+          + (j * data.gridSize)))
+        .innerHTML = '<input type="text" size="1" maxlength="1">'
+      word.push([item.solution[j], (item.y * data.gridSize 
+        + item.x 
+        + (j * data.gridSize))]);
+    }
+  }
+  wordList.push(word);
 }
