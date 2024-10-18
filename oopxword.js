@@ -75,7 +75,7 @@ class CrossWord {
   moveFocus(span) {
     /* Moves cursor to next cell after inserting letter */
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
-    const currentLetter = this.currentWord.find((letter) => letter === cell);
+    this.currentWord.find((letter) => letter === cell);
     const diff = this.currentWord[1] - this.currentWord[0]; // Across or down?
     try {
       document.querySelector('#grid-item-' + (cell + diff) + ' > input').focus();
@@ -91,8 +91,8 @@ class CrossWord {
     tmp.forEach((item) => {
       item.style.boxShadow  = 'none';
     })
-
   }
+
   clueNumber(item) {
     /* Fills in the clue numbers in first cell */
     const cell = item.y * this.data.gridSize + item.x;
@@ -163,7 +163,6 @@ class CrossWord {
 
   parseJson(item) {
     /* Fills in grid with input elements and creates clue list */
-    let solution = '';
     let word = [];
     const clue = document.querySelector('#clue-list');
     clue.innerHTML += 
