@@ -107,13 +107,11 @@ class CrossWord {
     this.deSelect();
     this.currentWord = [];
     let clue = [];
+    let wordNum;
     const word = this.findWord(cell);
-    dir === 'a' ? dir = 0 : dir = 1
-    /* Seems a bit of a hacky way to do it.
-     * Goes for across first, if there's 2 words in array (across and down) go for 2nd unless
-     * there's only down */
-    if (word[dir] === undefined) { dir = 0 };
-    word[dir].forEach((letter) => {
+    dir === 'a' ? wordNum = 0 : wordNum = 1;
+    if (!word[wordNum])  wordNum = 0;
+    word[wordNum].forEach((letter) => {
       document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
       this.currentWord.push(letter[1]);
       clue.push(letter[0]);
@@ -172,26 +170,26 @@ class CrossWord {
         + item.solution.length 
         + ')</li>';  
 
-    for (let j = 0; j < item.solution.length; j++) {
+    for (let i = 0; i < item.solution.length; i++) {
       /* Iterates through solution putting input element in cell */
       if (item.dir === 'a') {
         document.querySelector('#grid-item-' 
             + (item.y * this.data.gridSize 
             + item.x 
-            + j))
+            + i))
           .innerHTML = '<input type="text" size="1" maxlength="1">';
-        word.push([item.solution[j], (item.y * this.data.gridSize 
-          + item.x + j )]);
+        word.push([item.solution[i], (item.y * this.data.gridSize 
+          + item.x + i )]);
 
       } else {
         document.querySelector('#grid-item-' 
             + (item.y * this.data.gridSize 
             + item.x 
-            + (j * this.data.gridSize)))
+            + (i * this.data.gridSize)))
           .innerHTML = '<input type="text" size="1" maxlength="1">'
-        word.push([item.solution[j], (item.y * this.data.gridSize 
+        word.push([item.solution[i], (item.y * this.data.gridSize 
           + item.x 
-          + (j * this.data.gridSize))]);
+          + (i * this.data.gridSize))]);
       }
     }
     this.wordList.push(word);
