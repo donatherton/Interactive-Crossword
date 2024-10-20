@@ -102,15 +102,13 @@ class CrossWord {
     }
   }
 
-  selectWord(cell, dir) {
+  selectWord(cell, dir='a') {
     /* Selects word in grid when clue clicked */
     this.deSelect();
     this.currentWord = [];
     let clue = [];
     const word = this.findWord(cell);
-    if (dir === undefined) { dir = 'a' };
-    if (dir === 'a') { dir = 0 }
-    else { dir = 1 };
+    dir === 'a' ? dir = 0 : dir = 1
     /* Seems a bit of a hacky way to do it.
      * Goes for across first, if there's 2 words in array (across and down) go for 2nd unless
      * there's only down */
