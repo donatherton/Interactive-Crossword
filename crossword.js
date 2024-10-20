@@ -18,7 +18,6 @@ class CrossWord {
     const inputs = document.querySelectorAll('input');
     inputs.forEach((input) => {
       input.addEventListener('click', () => {
-        this.deSelect();
         const cell = Number(input.closest('span').getAttribute('id').replace('grid-item-', ''));
         this.selectWord(cell);
       })
@@ -115,7 +114,6 @@ class CrossWord {
     /* Seems a bit of a hacky way to do it.
      * Goes for across first, if there's 2 words in array (across and down) go for 2nd unless
      * there's only down */
-
     if (word[dir] === undefined) { dir = 0 };
     word[dir].forEach((letter) => {
       document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
@@ -165,22 +163,22 @@ class CrossWord {
     /* Fills in grid with input elements and creates clue list */
     let word = [];
     const clue = document.querySelector('#clue-list');
-    clue.innerHTML += 
-      '<li id="' + item.clueNo + item.dir + '">' 
-      + '<span class="bold">' 
-      + item.clueNo 
-      + item.dir
-      + ': </span>' 
-      + item.clue 
-      + ' (' 
-      + item.solution.length 
-      + ')</li>';  
+      clue.innerHTML += 
+        '<li id="' + item.clueNo + item.dir + '">' 
+        + '<span class="bold">' 
+        + item.clueNo 
+        + item.dir
+        + ': </span>' 
+        + item.clue 
+        + ' (' 
+        + item.solution.length 
+        + ')</li>';  
 
     for (let j = 0; j < item.solution.length; j++) {
       /* Iterates through solution putting input element in cell */
       if (item.dir === 'a') {
         document.querySelector('#grid-item-' 
-          + (item.y * this.data.gridSize 
+            + (item.y * this.data.gridSize 
             + item.x 
             + j))
           .innerHTML = '<input type="text" size="1" maxlength="1">';
@@ -189,7 +187,7 @@ class CrossWord {
 
       } else {
         document.querySelector('#grid-item-' 
-          + (item.y * this.data.gridSize 
+            + (item.y * this.data.gridSize 
             + item.x 
             + (j * this.data.gridSize)))
           .innerHTML = '<input type="text" size="1" maxlength="1">'
