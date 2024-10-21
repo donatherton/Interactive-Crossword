@@ -14,12 +14,9 @@ window.onload = () => {
     const inputs = document.querySelectorAll('input');
     inputs.forEach((input) => {
       input.addEventListener('click', () => 
-        selectWord(Number(input.closest('span').getAttribute('id').replace('grid-item-', ''))))
-      input.addEventListener('keypress', (e) => {
-        // If another letter is put in, change it immediately and move to next letter
-        input.value = e.key;
-        moveFocus(e.target.closest('span'))
-      })
+        selectWord(Number(input.closest('span').getAttribute('id').replace('grid-item-', '')))
+      )
+      input.addEventListener('keypress', (e) => moveFocus(e))
     })
     document.querySelector('#clues').addEventListener('click', selectClue);
     document.querySelector('#solve').addEventListener('click', solve);
@@ -64,15 +61,17 @@ window.onload = () => {
     })
   }
 
-  function moveFocus(span) {
+  function moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
+    e.target.value = e.key; // Change letter to input
+    const span = e.target.closest('span')
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
     currentWord.find((letter) => letter === cell);
     const diff = currentWord[1] - currentWord[0]; // Across or down?
     try {
       document.querySelector('#grid-item-' + (cell + diff) + ' > input').focus();
     }
-    catch(e) {
+    catch(err) {
       console.log('End of word');
     }
   }
@@ -167,7 +166,7 @@ window.onload = () => {
       /* Iterates through solution putting input element in cell */
       if (item.dir === 'a') {
         document.querySelector('#grid-item-' 
-            + (item.y * data.gridSize 
+          + (item.y * data.gridSize 
             + item.x 
             + i))
           .innerHTML = '<input type="text" size="1" maxlength="1">';
@@ -176,7 +175,7 @@ window.onload = () => {
 
       } else {
         document.querySelector('#grid-item-' 
-            + (item.y * data.gridSize 
+          + (item.y * data.gridSize 
             + item.x 
             + (i * data.gridSize)))
           .innerHTML = '<input type="text" size="1" maxlength="1">'
