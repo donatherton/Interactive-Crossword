@@ -3,23 +3,20 @@
 window.onload = () => {
   const data = JSON.parse(document.getElementById('data').textContent);
   let wordList = [];
+  let currentWord = [];
+
   makeGrid(data.gridSize);
   data.clueList.forEach(parseJson);
   data.clueList.forEach(clueNumber);
   addListeners();
 
-  let currentWord = [];
-
   function addListeners() {
     const inputs = document.querySelectorAll('input');
     inputs.forEach((input) => {
-      input.addEventListener('click', () => {
-        const cell = Number(input.closest('span').getAttribute('id').replace('grid-item-', ''));
-        selectWord(cell);
-      })
-
+      input.addEventListener('click', () => 
+        selectWord(Number(input.closest('span').getAttribute('id').replace('grid-item-', ''))))
       input.addEventListener('keypress', (e) => {
-        // If another letter is put in, change it immediately
+        // If another letter is put in, change it immediately and move to next letter
         input.value = e.key;
         moveFocus(e.target.closest('span'))
       })
