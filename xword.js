@@ -97,7 +97,7 @@ window.onload = () => {
   }
 
   function selectWord(cell, dir='a') {
-    /* Selects word in grid when clue clicked */
+    /* Selects word in grid when clue or cell clicked */
     deSelect();
     currentWord = [];
     let clue = [];

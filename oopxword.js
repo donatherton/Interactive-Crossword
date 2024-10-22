@@ -9,8 +9,8 @@ class CrossWord {
 
   init() {
     this.makeGrid(this.data.gridSize);
-    this.data.clueList.forEach(this.parseJson.bind(this));
-    this.data.clueList.forEach(this.clueNumber.bind(this));
+    this.data.clueList.forEach(item => this.parseJson(item));
+    this.data.clueList.forEach(item => this.clueNumber(item));
     this.addListeners();
   }
 
@@ -28,9 +28,9 @@ class CrossWord {
         this.moveFocus(e.target.closest('span'))
       })
     })
-    document.querySelector('#clues').addEventListener('click', this.selectClue.bind(this));
-    document.querySelector('#solve').addEventListener('click', this.solve.bind(this));
-    document.querySelector('#check').addEventListener('click', this.check.bind(this));
+    document.querySelector('#clues').addEventListener('click', e => this.selectClue(e));
+    document.querySelector('#solve').addEventListener('click', e => this.solve(e));
+    document.querySelector('#check').addEventListener('click', e => this.check(e));
   }
 
   findWord(cell) {
