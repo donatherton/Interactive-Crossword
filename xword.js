@@ -14,7 +14,7 @@ window.onload = () => {
     const inputs = document.querySelectorAll('input');
     inputs.forEach((input) => {
       input.addEventListener('click', () => 
-        selectWord(Number(input.closest('span').getAttribute('id').replace('grid-item-', '')))
+        selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')))
       )
       input.addEventListener('keypress', (e) => moveFocus(e))
     })
@@ -41,8 +41,7 @@ window.onload = () => {
     if (confirm('Reveal all solutions?')) {
       wordList.forEach((item) => {
         item.forEach((letter) => {
-          const answer = '#grid-item-' + letter[1] + ' > input';
-          document.querySelector(answer).value = letter[0];
+          document.querySelector('#grid-item-' + letter[1]).firstElementChild.value = letter[0];
         })
       })
     }
@@ -52,7 +51,7 @@ window.onload = () => {
     /* Deletes wrong letters */
     wordList.forEach((item) => {
       item.forEach((letter) => {
-        const val = document.querySelector('#grid-item-' + letter[1] + ' > input');
+        const val = document.querySelector('#grid-item-' + letter[1]).firstElementChild;
         const ans = letter[0];
         if (val.value.toUpperCase() !== ans && val.value !== '') {
           val.value = '';    
@@ -64,12 +63,12 @@ window.onload = () => {
   function moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
     e.target.value = e.key; // Change letter to input
-    const span = e.target.closest('span')
+    const span = e.target.parentElement;
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
     currentWord.find((letter) => letter === cell);
     const diff = currentWord[1] - currentWord[0]; // Across or down?
     try {
-      document.querySelector('#grid-item-' + (cell + diff) + ' > input').focus();
+      document.querySelector('#grid-item-' + (cell + diff)).firstElementChild.focus();
     }
     catch(err) {
       console.log('End of word');
@@ -97,16 +96,17 @@ window.onload = () => {
   }
 
   function selectWord(cell, dir='a') {
-    /* Selects word in grid when clue or cell clicked */
+    /* Selects word in grid when clue or cell clicked and puts current clue in currentClue div */
     deSelect();
     currentWord = [];
     let clue = [];
     let wordNum;
     const word = findWord(cell);
-    dir === 'a' ? wordNum = 0 : wordNum = 1; 
-    if (word[wordNum] === undefined)  wordNum = 0 ;
+    // If up and down words in cell word will be 2 arrays
+    word.length === 2 && dir === 'd' ? wordNum = 1 : wordNum = 0;
     word[wordNum].forEach((letter) => {
-      document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
+      document.querySelector('#grid-item-' 
+        + letter[1]).firstElementChild.style.boxShadow = '0 0 7px 7px #dddddd inset';
       currentWord.push(letter[1]);
       clue.push(letter[0]);
     })
@@ -128,7 +128,7 @@ window.onload = () => {
       if (item.clueNo === id && item.dir === dir) {
         const cell = item.y * data.gridSize + item.x;
         selectWord(cell, dir);
-        document.querySelector('#grid-item-' + cell + ' > input').focus();
+        document.querySelector('#grid-item-' + cell).firstElementChild.focus();
       }
     })  
   }

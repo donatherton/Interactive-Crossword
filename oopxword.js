@@ -18,15 +18,10 @@ class CrossWord {
     const inputs = document.querySelectorAll('input');
     inputs.forEach((input) => {
       input.addEventListener('click', () => {
-        const cell = Number(input.closest('span').getAttribute('id').replace('grid-item-', ''));
-        this.selectWord(cell);
+        this.selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')));
       })
 
-      input.addEventListener('keypress', (e) => {
-        // If another letter is put in, change it immediately
-        input.value = e.key;
-        this.moveFocus(e.target.closest('span'))
-      })
+      input.addEventListener('keypress', e => this.moveFocus(e))
     })
     document.querySelector('#clues').addEventListener('click', e => this.selectClue(e));
     document.querySelector('#solve').addEventListener('click', e => this.solve(e));
@@ -51,8 +46,7 @@ class CrossWord {
     if (confirm('Reveal all solutions?')) {
       this.wordList.forEach((item) => {
         item.forEach((letter) => {
-          const answer = '#grid-item-' + letter[1] + ' > input';
-          document.querySelector(answer).value = letter[0];
+          document.querySelector('#grid-item-' + letter[1]).firstElementChild.value = letter[0];
         })
       })
     }
@@ -62,7 +56,7 @@ class CrossWord {
     /* Deletes wrong letters */
     this.wordList.forEach((item) => {
       item.forEach((letter) => {
-        const val = document.querySelector('#grid-item-' + letter[1] + ' > input');
+        const val = document.querySelector('#grid-item-' + letter[1]).firstElementChild;
         const ans = letter[0];
         if (val.value.toUpperCase() !== ans && val.value !== '') {
           val.value = '';    
@@ -71,15 +65,18 @@ class CrossWord {
     })
   }
 
-  moveFocus(span) {
+  moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
+    // If another letter is put in, change it immediately
+    e.target.value = e.key;
+    const span = e.target.parentElement
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
     this.currentWord.find((letter) => letter === cell);
     const diff = this.currentWord[1] - this.currentWord[0]; // Across or down?
     try {
-      document.querySelector('#grid-item-' + (cell + diff) + ' > input').focus();
+      document.querySelector('#grid-item-' + (cell + diff)).firstElementChild.focus();
     }
-    catch(e) {
+    catch(err) {
       console.log('End of word');
     }
   }
@@ -109,10 +106,10 @@ class CrossWord {
     let clue = [];
     let wordNum;
     const word = this.findWord(cell);
-    dir === 'a' ? wordNum = 0 : wordNum = 1;
-    if (!word[wordNum])  wordNum = 0;
+    // If up and down words in cell word will be 2 arrays
+    word.length === 2 && dir === 'd' ? wordNum = 1 : wordNum = 0;
     word[wordNum].forEach((letter) => {
-      document.querySelector('#grid-item-' + letter[1] + '> input').style.boxShadow = '0 0 7px 7px #dddddd inset';
+      document.querySelector('#grid-item-' + letter[1]).firstElementChild.style.boxShadow = '0 0 7px 7px #dddddd inset';
       this.currentWord.push(letter[1]);
       clue.push(letter[0]);
     })
@@ -136,7 +133,7 @@ class CrossWord {
       if (item[i].clueNo === id && item[i].dir === dir) {
         const cell = item[i].y * this.data.gridSize + item[i].x;
         this.selectWord(cell, dir);
-        document.querySelector('#grid-item-' + cell + ' > input').focus();
+        document.querySelector('#grid-item-' + cell).firstElementChild.focus();
       }
     }  
   }
@@ -174,7 +171,7 @@ class CrossWord {
       /* Iterates through solution putting input element in cell */
       if (item.dir === 'a') {
         document.querySelector('#grid-item-' 
-            + (item.y * this.data.gridSize 
+          + (item.y * this.data.gridSize 
             + item.x 
             + i))
           .innerHTML = '<input type="text" size="1" maxlength="1">';
@@ -183,7 +180,7 @@ class CrossWord {
 
       } else {
         document.querySelector('#grid-item-' 
-            + (item.y * this.data.gridSize 
+          + (item.y * this.data.gridSize 
             + item.x 
             + (i * this.data.gridSize)))
           .innerHTML = '<input type="text" size="1" maxlength="1">'
