@@ -21,7 +21,7 @@ class CrossWord {
         this.selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')));
       })
 
-      input.addEventListener('keypress', e => this.moveFocus(e))
+      input.addEventListener('keyup', e => this.moveFocus(e))
     })
     document.querySelector('#clues').addEventListener('click', e => this.selectClue(e));
     document.querySelector('#solve').addEventListener('click', e => this.solve(e));
@@ -71,13 +71,9 @@ class CrossWord {
     e.target.value = e.key;
     const span = e.target.parentElement
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
-    this.currentWord.find((letter) => letter === cell);
     const diff = this.currentWord[1] - this.currentWord[0]; // Across or down?
-    try {
+    if (this.currentWord.indexOf(cell) < this.currentWord.length - 1) {
       document.querySelector('#grid-item-' + (cell + diff)).firstElementChild.focus();
-    }
-    catch(err) {
-      console.log('End of word');
     }
   }
 

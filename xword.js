@@ -16,7 +16,7 @@ window.onload = () => {
       input.addEventListener('click', () => 
         selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')))
       )
-      input.addEventListener('keypress', (e) => moveFocus(e))
+      input.addEventListener('keyup', moveFocus)
     })
     document.querySelector('#clues').addEventListener('click', selectClue);
     document.querySelector('#solve').addEventListener('click', solve);
@@ -65,13 +65,9 @@ window.onload = () => {
     e.target.value = e.key; // Change letter to input
     const span = e.target.parentElement;
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
-    currentWord.find((letter) => letter === cell);
     const diff = currentWord[1] - currentWord[0]; // Across or down?
-    try {
+    if (currentWord.indexOf(cell) < currentWord.length - 1) {
       document.querySelector('#grid-item-' + (cell + diff)).firstElementChild.focus();
-    }
-    catch(err) {
-      console.log('End of word');
     }
   }
 
