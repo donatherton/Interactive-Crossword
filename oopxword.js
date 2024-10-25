@@ -4,7 +4,10 @@ class CrossWord {
   constructor() {
     this.data = JSON.parse(document.getElementById('data').textContent);
     this.wordList = [];
-    this.currentWord = [];
+    this.currentWord = {
+      'dir': '',
+      'word': []
+    };
   }
 
   init() {
@@ -71,8 +74,8 @@ class CrossWord {
     e.target.value = e.key;
     const span = e.target.parentElement
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
-    const diff = this.currentWord[1] - this.currentWord[0]; // Across or down?
-    if (this.currentWord.indexOf(cell) < this.currentWord.length - 1) {
+    const diff = this.currentWord.word[1] - this.currentWord.word[0]; // Across or down?
+    if (this.currentWord.word.indexOf(cell) < this.currentWord.word.length - 1) {
       document.querySelector('#grid-item-' + (cell + diff)).firstElementChild.focus();
     }
   }
@@ -95,18 +98,25 @@ class CrossWord {
     }
   }
 
-  selectWord(cell, dir='a') {
+  selectWord(cell, dir) {
     /* Selects word in grid when clue clicked */
     this.deSelect();
-    this.currentWord = [];
+    this.currentWord.word = [];
     let clue = [];
     let wordNum;
     const word = this.findWord(cell);
-    // If up and down words in cell word will be 2 arrays
-    word.length === 2 && dir === 'd' ? wordNum = 1 : wordNum = 0;
+    // If up and down words in cell word will be 2 arrays. Cycle between them
+    if (word.length === 2 && (dir === 'd' || (this.currentWord.dir === 'a' && dir !== 'a'))) {
+      wordNum = 1;
+      this.currentWord.dir = 'd';
+    } else {
+      wordNum = 0;
+      this.currentWord.dir = 'a';
+    }
+    if (dir !== undefined) this.currentWord.dir = dir;
     word[wordNum].forEach((letter) => {
       document.querySelector('#grid-item-' + letter[1]).firstElementChild.style.boxShadow = '0 0 7px 7px #dddddd inset';
-      this.currentWord.push(letter[1]);
+      this.currentWord.word.push(letter[1]);
       clue.push(letter[0]);
     })
     // Puts clue in curentClue div

@@ -3,7 +3,10 @@
 window.onload = () => {
   const data = JSON.parse(document.getElementById('data').textContent);
   let wordList = [];
-  let currentWord = [];
+  let currentWord = {
+    'dir': '',
+    'word': []
+  };
 
   makeGrid(data.gridSize);
   data.clueList.forEach(parseJson);
@@ -65,8 +68,8 @@ window.onload = () => {
     e.target.value = e.key; // Change letter to input
     const span = e.target.parentElement;
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
-    const diff = currentWord[1] - currentWord[0]; // Across or down?
-    if (currentWord.indexOf(cell) < currentWord.length - 1) {
+    const diff = currentWord.word[1] - currentWord.word[0]; // Across or down?
+    if (currentWord.word.indexOf(cell) < currentWord.word.length - 1) {
       document.querySelector('#grid-item-' + (cell + diff)).firstElementChild.focus();
     }
   }
@@ -91,19 +94,27 @@ window.onload = () => {
     }
   }
 
-  function selectWord(cell, dir='a') {
+  function selectWord(cell, dir) {
     /* Selects word in grid when clue or cell clicked and puts current clue in currentClue div */
     deSelect();
-    currentWord = [];
+    currentWord.word = [];
     let clue = [];
     let wordNum;
     const word = findWord(cell);
-    // If up and down words in cell word will be 2 arrays
-    word.length === 2 && dir === 'd' ? wordNum = 1 : wordNum = 0;
+    // If up and down words in cell word will be 2 arrays. Cycle between them
+    //word.length === 2 && (dir === 'd' || currentWord.dir === 'a') ? wordNum = 1 : wordNum = 0;
+    if (word.length === 2 && (dir === 'd' || (currentWord.dir === 'a' && dir !== 'a'))) {
+      wordNum = 1;
+      currentWord.dir = 'd';
+    } else {
+      wordNum = 0;
+      currentWord.dir = 'a';
+    }
+    if (dir !== undefined) currentWord.dir = dir;
     word[wordNum].forEach((letter) => {
       document.querySelector('#grid-item-' 
         + letter[1]).firstElementChild.style.boxShadow = '0 0 7px 7px #dddddd inset';
-      currentWord.push(letter[1]);
+      currentWord.word.push(letter[1]);
       clue.push(letter[0]);
     })
     // Puts clue in curentClue div
