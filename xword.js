@@ -19,7 +19,8 @@ window.onload = () => {
       input.addEventListener('click', () => 
         selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')))
       )
-      input.addEventListener('input', moveFocus)
+      // textInput works on desktop and mobile
+      input.addEventListener('textInput', moveFocus)
     })
     document.querySelector('#clues').addEventListener('click', selectClue);
     document.querySelector('#solve').addEventListener('click', solve);

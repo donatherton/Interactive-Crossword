@@ -23,8 +23,8 @@ class CrossWord {
       input.addEventListener('click', () => {
         this.selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')));
       })
-
-      input.addEventListener('input', e => this.moveFocus(e))
+      // textInput works on desktop and mobile
+      input.addEventListener('textInput', e => this.moveFocus(e))
     })
     document.querySelector('#clues').addEventListener('click', e => this.selectClue(e));
     document.querySelector('#solve').addEventListener('click', e => this.solve(e));
@@ -71,7 +71,7 @@ class CrossWord {
   moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
     // If another letter is put in, change it immediately
-    e.target.value = e.data;
+    e.target.value = e.data; // Change letter to input
     const span = e.target.parentElement
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
     const diff = this.currentWord.word[1] - this.currentWord.word[0]; // Across or down?
