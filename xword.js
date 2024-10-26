@@ -19,7 +19,7 @@ window.onload = () => {
       input.addEventListener('click', () => 
         selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')))
       )
-      input.addEventListener('keyup', moveFocus)
+      input.addEventListener('input', moveFocus)
     })
     document.querySelector('#clues').addEventListener('click', selectClue);
     document.querySelector('#solve').addEventListener('click', solve);
@@ -65,7 +65,7 @@ window.onload = () => {
 
   function moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
-    e.target.value = e.key; // Change letter to input
+    e.target.value = e.data; // Change letter to input
     const span = e.target.parentElement;
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
     const diff = currentWord.word[1] - currentWord.word[0]; // Across or down?
@@ -102,15 +102,19 @@ window.onload = () => {
     let wordNum;
     const word = findWord(cell);
     // If up and down words in cell word will be 2 arrays. Cycle between them
-    //word.length === 2 && (dir === 'd' || currentWord.dir === 'a') ? wordNum = 1 : wordNum = 0;
+    let tmp;
     if (word.length === 2 && (dir === 'd' || (currentWord.dir === 'a' && dir !== 'a'))) {
       wordNum = 1;
-      currentWord.dir = 'd';
+      tmp = 'd';
     } else {
       wordNum = 0;
-      currentWord.dir = 'a';
+      tmp = 'a';
     }
-    if (dir !== undefined) currentWord.dir = dir;
+    if (dir === undefined) {
+      currentWord.dir = tmp;
+    } else {
+      currentWord.dir = dir;
+    }
     word[wordNum].forEach((letter) => {
       document.querySelector('#grid-item-' 
         + letter[1]).firstElementChild.style.boxShadow = '0 0 7px 7px #dddddd inset';

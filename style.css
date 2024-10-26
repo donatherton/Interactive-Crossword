@@ -1,14 +1,3 @@
-/*  First of all, reset.css. Resets default browser CSS. */
-html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,code,del,dfn,em,img,q,dl,dt,dd,ol,ul,li,fieldset,form,label,input,textarea,select,legend,table,caption,tbody,tfoot,thead,tr,th,td {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-weight: inherit;
-    font-style: inherit;
-    font-size: 100%;
-    font-family: inherit;
-    vertical-align: baseline;
-
 body {
     color: #35352c;
     background-color: #e6e6e6;
@@ -50,6 +39,8 @@ input {
     height: 100%;
     text-transform: uppercase;
     text-align: center;
+    font-size: 1.3rem;
+    border: none;
 }
 
 #clues {

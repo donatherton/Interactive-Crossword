@@ -24,7 +24,7 @@ class CrossWord {
         this.selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')));
       })
 
-      input.addEventListener('keyup', e => this.moveFocus(e))
+      input.addEventListener('input', e => this.moveFocus(e))
     })
     document.querySelector('#clues').addEventListener('click', e => this.selectClue(e));
     document.querySelector('#solve').addEventListener('click', e => this.solve(e));
@@ -71,7 +71,7 @@ class CrossWord {
   moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
     // If another letter is put in, change it immediately
-    e.target.value = e.key;
+    e.target.value = e.data;
     const span = e.target.parentElement
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
     const diff = this.currentWord.word[1] - this.currentWord.word[0]; // Across or down?
@@ -106,14 +106,19 @@ class CrossWord {
     let wordNum;
     const word = this.findWord(cell);
     // If up and down words in cell word will be 2 arrays. Cycle between them
+let tmp;
     if (word.length === 2 && (dir === 'd' || (this.currentWord.dir === 'a' && dir !== 'a'))) {
       wordNum = 1;
-      this.currentWord.dir = 'd';
+      tmp = 'd';
     } else {
       wordNum = 0;
-      this.currentWord.dir = 'a';
+      tmp = 'a';
     }
-    if (dir !== undefined) this.currentWord.dir = dir;
+    if (dir === undefined) {
+      this.currentWord.dir = tmp;
+    } else {
+      this.currentWord.dir = dir;
+    }
     word[wordNum].forEach((letter) => {
       document.querySelector('#grid-item-' + letter[1]).firstElementChild.style.boxShadow = '0 0 7px 7px #dddddd inset';
       this.currentWord.word.push(letter[1]);
