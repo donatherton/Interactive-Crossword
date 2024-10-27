@@ -7,8 +7,11 @@ body {
     min-height: 100%;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 		line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 #container {
@@ -23,15 +26,16 @@ body {
     height: 90vw;
     max-width: 500px;
     max-height: 500px;
-    margin:  20px ;
+    margin:  20px;
+    border: 1px solid #000;
+    gap: 1px;
+    background-color: #000;
 }
 
 .grid-item {
     padding: 0;
     width: 100%;
     height: 100%;
-    background-color: #000;
-    border: 1px solid #000;
 }
 
 input {
@@ -41,6 +45,8 @@ input {
     text-align: center;
     font-size: 1.3rem;
     border: none;
+    background-color: #fff;
+    color:#000;
 }
 
 #clues {
@@ -56,10 +62,18 @@ li {
     margin: 10px;
 }
 
-#currentClue, #button {
+#currentClue {
     width: 90vw;
     max-width: 500px;
-    margin: 0 10px 30px 10px ;
+    margin: 0 10px 50px 10px ;
+    height: 1em;
+    font-weight: bold;
+}
+
+#buttons {
+    width: 90vw;
+    max-width: 500px;
+    margin: 0 10px 10px 10px ;
     height: 1em;
     font-weight: bold;
 }
