@@ -23,7 +23,7 @@ class CrossWord {
       input.addEventListener('click', () => {
         this.selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')));
       })
-      // textInput works on desktop and mobile
+      input.addEventListener('keydown', this.deleteValue);
       input.addEventListener('textInput', e => this.moveFocus(e))
     })
     document.querySelector('#clues').addEventListener('click', e => this.selectClue(e));
@@ -68,10 +68,19 @@ class CrossWord {
     })
   }
 
+  deleteValue(e) {
+    /* Android keyboard doesn't get key with e on keydown/up
+     * so have to use input event, but to make it still
+     * change after cell already populated have to empty cell first */
+    e.target.value = '';  
+  }
+
   moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
     // If another letter is put in, change it immediately
     e.target.value = e.data; // Change letter to input
+    // Android doesn't respect maxlength
+    if (e.target.value.length > 1) e.target.value = e.target.value.slice(-1);
     const span = e.target.parentElement
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
     const diff = this.currentWord.word[1] - this.currentWord.word[0]; // Across or down?

@@ -19,8 +19,8 @@ window.onload = () => {
       input.addEventListener('click', () => 
         selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')))
       )
-      // textInput works on desktop and mobile
-      input.addEventListener('textInput', moveFocus)
+      input.addEventListener('keydown', deleteValue);
+      input.addEventListener('input', moveFocus);
     })
     document.querySelector('#clues').addEventListener('click', selectClue);
     document.querySelector('#solve').addEventListener('click', solve);
@@ -64,9 +64,19 @@ window.onload = () => {
     })
   }
 
+  function deleteValue(e) {
+    /* Android keyboard doesn't get key with e on keydown/up
+     * so have to use input event, but to make it still
+     * change after cell already populated have to empty cell first */
+    e.target.value = '';  
+  }
+
   function moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
-    e.target.value = e.data; // Change letter to input
+    // Change letter to input
+    e.target.value = e.data; 
+    // Android doesn't respect maxlength
+    if (e.target.value.length > 1) e.target.value = e.target.value.slice(-1);
     const span = e.target.parentElement;
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
     const diff = currentWord.word[1] - currentWord.word[0]; // Across or down?
