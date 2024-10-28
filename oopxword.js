@@ -78,7 +78,7 @@ class CrossWord {
   moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
     // If another letter is put in, change it immediately
-    e.target.value = e.data; // Change letter to input
+    //e.target.value = e.data; // Change letter to input
     // Android doesn't respect maxlength
     if (e.target.value.length > 1) e.target.value = e.target.value.slice(-1);
     const span = e.target.parentElement

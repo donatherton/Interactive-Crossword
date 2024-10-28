@@ -73,8 +73,6 @@ window.onload = () => {
 
   function moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
-    // Change letter to input
-    e.target.value = e.data; 
     // Android doesn't respect maxlength
     if (e.target.value.length > 1) e.target.value = e.target.value.slice(-1);
     const span = e.target.parentElement;
