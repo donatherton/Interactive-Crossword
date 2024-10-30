@@ -68,7 +68,7 @@ window.onload = () => {
     /* Android keyboard doesn't get key with e on keydown/up
      * so have to use input event, but to make it still
      * change after cell already populated have to empty cell first */
-    e.target.value = '';  
+    e.target.value = null;  
   }
 
   function moveFocus(e) {
@@ -129,7 +129,11 @@ window.onload = () => {
         + letter[1]).firstElementChild.style.boxShadow = '0 0 7px 7px #dddddd inset';
       currentWord.word.push(letter[1]);
       clue.push(letter[0]);
-    })
+    });
+    currentClue(clue);
+  }
+
+  function currentClue(clue) {
     // Puts clue in curentClue div
     clue = clue.join('');
     data.clueList.forEach((item) => {
