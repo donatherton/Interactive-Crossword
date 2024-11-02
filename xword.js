@@ -14,14 +14,14 @@ window.onload = () => {
   addListeners();
 
   function addListeners() {
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach((input) => {
-      input.addEventListener('click', () => 
-        selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')))
-      )
-      input.addEventListener('keydown', deleteValue);
-      input.addEventListener('input', moveFocus);
-    })
+    const grid = document.querySelector('#xword-grid');
+    grid.addEventListener('click', (e) => {
+      if (e.target.tagName === 'INPUT') {
+        selectWord(Number(e.target.parentElement.getAttribute('id').replace('grid-item-', '')))
+      }
+    });
+    grid.addEventListener('keydown', deleteValue);
+    grid.addEventListener('input', moveFocus);
     document.querySelector('#clues').addEventListener('click', selectClue);
     document.querySelector('#solve').addEventListener('click', solve);
     document.querySelector('#check').addEventListener('click', check);
