@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 window.onload = () => {
   const data = JSON.parse(document.getElementById('data').textContent);
