@@ -7,25 +7,21 @@ window.onload = () => {
     'dir': '',
     'word': []
   };
-
+  // Set up grid and listeners
   makeGrid(data.gridSize);
   data.clueList.forEach(parseJson);
   data.clueList.forEach(clueNumber);
-  addListeners();
-
-  function addListeners() {
-    const grid = document.querySelector('#xword-grid');
-    grid.addEventListener('click', (e) => {
-      if (e.target.tagName === 'INPUT') {
-        selectWord(Number(e.target.parentElement.getAttribute('id').replace('grid-item-', '')))
-      }
-    });
-    grid.addEventListener('keydown', deleteValue);
-    grid.addEventListener('input', moveFocus);
-    document.querySelector('#clues').addEventListener('click', selectClue);
-    document.querySelector('#solve').addEventListener('click', solve);
-    document.querySelector('#check').addEventListener('click', check);
-  }
+  const grid = document.querySelector('#xword-grid');
+  grid.addEventListener('click', (e) => {
+    if (e.target.tagName === 'INPUT') {
+      selectWord(Number(e.target.parentElement.getAttribute('id').replace('grid-item-', '')))
+    }
+  });
+  grid.addEventListener('keydown', deleteValue);
+  grid.addEventListener('input', moveFocus);
+  document.querySelector('#clues').addEventListener('click', selectClue);
+  document.querySelector('#solve').addEventListener('click', solve);
+  document.querySelector('#check').addEventListener('click', check);
 
   function findWord(cell) {
     /* Finds word from cell */
@@ -130,12 +126,11 @@ window.onload = () => {
       currentWord.word.push(letter[1]);
       clue.push(letter[0]);
     });
-    currentClue(clue);
+    currentClue(clue.join(''));
   }
 
   function currentClue(clue) {
     // Puts clue in curentClue div
-    clue = clue.join('');
     data.clueList.forEach((item) => {
       if (item.solution === clue) {
         document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
