@@ -130,12 +130,15 @@ window.onload = () => {
   }
 
   function currentClue(clue) {
-    // Puts clue in curentClue div
-    data.clueList.forEach((item) => {
-      if (item.solution === clue) {
-        document.querySelector('#currentClue').innerHTML = item.clueNo + item.dir + ': ' + item.clue;
+    /* Puts clue in curentClue div */
+    const item = data.clueList;
+    for (let i = 0; i < item.length; i++) {
+      if (item[i].solution === clue) {
+        document.querySelector('#currentClue').innerHTML = item[i].clueNo 
+          + item[i].dir + ': ' + item[i].clue;
+        break;
       }
-    })
+    }
   }
 
   function selectClue(e) {
@@ -143,13 +146,15 @@ window.onload = () => {
     let id = e.target.getAttribute('id').split('');
     const dir = id.pop();
     id = Number(id.join(''));
-    data.clueList.forEach((item) => {
-      if (item.clueNo === id && item.dir === dir) {
-        const cell = item.y * data.gridSize + item.x;
+    const item = data.clueList;
+      for (let i = 0; i < item.length; i++) {
+        if (item[i].clueNo === id && item[i].dir === dir) {
+        const cell = item[i].y * data.gridSize + item[i].x;
         selectWord(cell, dir);
         document.querySelector('#grid-item-' + cell).firstElementChild.focus();
+        break;
       }
-    })  
+    }  
   }
 
   function makeGrid(gridSize) {
