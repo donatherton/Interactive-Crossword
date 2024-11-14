@@ -1,8 +1,8 @@
 'use strict'
 
 class CrossWord {
-  constructor() {
-    this.data = JSON.parse(document.getElementById('data').textContent);
+  constructor(data) {
+    this.data = data;
     this.wordList = [];
     this.currentWord = {
       'dir': '',
@@ -14,18 +14,14 @@ class CrossWord {
     this.makeGrid(this.data.gridSize);
     this.data.clueList.forEach(item => this.parseJson(item));
     this.data.clueList.forEach(item => this.clueNumber(item));
-    this.addListeners();
-  }
-
-  addListeners() {
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach((input) => {
-      input.addEventListener('click', () => {
-        this.selectWord(Number(input.parentElement.getAttribute('id').replace('grid-item-', '')));
-      })
-      input.addEventListener('keydown', this.deleteValue);
-      input.addEventListener('textInput', e => this.moveFocus(e))
+    const grid = document.querySelector('#xword-grid');
+    grid.addEventListener('click', e => {
+      if (e.target.tagName === 'INPUT') {
+        this.selectWord(Number(e.target.parentElement.getAttribute('id').replace('grid-item-', '')))
+      }
     })
+    grid.addEventListener('keydown', e => this.deleteValue(e));
+    grid.addEventListener('input', e => this.moveFocus(e))
     document.querySelector('#clues').addEventListener('click', e => this.selectClue(e));
     document.querySelector('#solve').addEventListener('click', e => this.solve(e));
     document.querySelector('#check').addEventListener('click', e => this.check(e));
@@ -115,7 +111,7 @@ class CrossWord {
     let wordNum;
     const word = this.findWord(cell);
     // If up and down words in cell word will be 2 arrays. Cycle between them
-let tmp;
+    let tmp;
     if (word.length === 2 && (dir === 'd' || (this.currentWord.dir === 'a' && dir !== 'a'))) {
       wordNum = 1;
       tmp = 'd';
@@ -214,6 +210,7 @@ let tmp;
 }
 
 window.onload = () => {
-  let crossWord = new CrossWord();
+  const data = JSON.parse(document.getElementById('data').textContent);
+  let crossWord = new CrossWord(data);
   crossWord.init()
 }
