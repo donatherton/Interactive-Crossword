@@ -17,7 +17,6 @@ window.onload = () => {
       selectWord(Number(e.target.parentElement.getAttribute('id').replace('grid-item-', '')))
     }
   });
-  grid.addEventListener('keydown', deleteValue);
   grid.addEventListener('input', moveFocus);
   document.querySelector('#clues').addEventListener('click', selectClue);
   document.querySelector('#solve').addEventListener('click', solve);
@@ -60,16 +59,9 @@ window.onload = () => {
     })
   }
 
-  function deleteValue(e) {
-    /* Android keyboard doesn't get key with e on keydown/up
-     * so have to use input event, but to make it still
-     * change after cell already populated have to empty cell first */
-    e.target.value = null;  
-  }
-
   function moveFocus(e) {
     /* Moves cursor to next cell after inserting letter */
-    // Android doesn't respect maxlength
+    // Only one letter in input
     if (e.target.value.length > 1) e.target.value = e.target.value.slice(-1);
     const span = e.target.parentElement;
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
@@ -191,7 +183,7 @@ window.onload = () => {
           + (item.y * data.gridSize 
             + item.x 
             + i))
-          .innerHTML = '<input type="text" size="1" maxlength="1">';
+          .innerHTML = '<input type="text" size="1">';
         word.push([item.solution[i], (item.y * data.gridSize 
           + item.x + i )]);
 
@@ -200,7 +192,7 @@ window.onload = () => {
           + (item.y * data.gridSize 
             + item.x 
             + (i * data.gridSize)))
-          .innerHTML = '<input type="text" size="1" maxlength="1">'
+          .innerHTML = '<input type="text" size="1">'
         word.push([item.solution[i], (item.y * data.gridSize 
           + item.x 
           + (i * data.gridSize))]);

@@ -18,7 +18,6 @@ function CrossWord(data) {
         this.selectWord(Number(e.target.parentElement.getAttribute('id').replace('grid-item-', '')))
       }
     });
-    grid.addEventListener('keydown', e => this.deleteValue(e));
     grid.addEventListener('input', e => this.moveFocus(e));
     document.querySelector('#clues').addEventListener('click', e => this.selectClue(e));
     document.querySelector('#solve').addEventListener('click', e => this.solve(e));
@@ -62,18 +61,9 @@ function CrossWord(data) {
     })
   }
 
-  this.deleteValue = (e) => {
-    /* Android keyboard doesn't get key with e on keydown/up
-     * so have to use input event, but to make it still
-     * change after cell already populated have to empty cell first */
-    e.target.value = '';  
-  }
-
   this.moveFocus = (e) => {
     /* Moves cursor to next cell after inserting letter */
-    // If another letter is put in, change it immediately
-    //e.target.value = e.data; // Change letter to input
-    // Android doesn't respect maxlength
+    // Only one leter in input 
     if (e.target.value.length > 1) e.target.value = e.target.value.slice(-1);
     const span = e.target.parentElement
     const cell = Number(span.getAttribute('id').replace('grid-item-', ''));
@@ -197,7 +187,7 @@ function CrossWord(data) {
           + (item.y * this.data.gridSize 
             + item.x 
             + i))
-          .innerHTML = '<input type="text" size="1" maxlength="1">';
+          .innerHTML = '<input type="text" size="1">';
         word.push([item.solution[i], (item.y * this.data.gridSize 
           + item.x + i )]);
 
@@ -206,7 +196,7 @@ function CrossWord(data) {
           + (item.y * this.data.gridSize 
             + item.x 
             + (i * this.data.gridSize)))
-          .innerHTML = '<input type="text" size="1" maxlength="1">'
+          .innerHTML = '<input type="text" size="1">'
         word.push([item.solution[i], (item.y * this.data.gridSize 
           + item.x 
           + (i * this.data.gridSize))]);
