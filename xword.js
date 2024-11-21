@@ -85,7 +85,7 @@ window.onload = () => {
     if (document.querySelector('#grid-item-' 
       + cell).querySelector('.clueNo') === null) {
       document.querySelector(`#grid-item-${cell}`).innerHTML += 
-      `<span class="clueNo">${item.clueNo}</span>`;
+        `<span class="clueNo">${item.clueNo}</span>`;
     }
   }
 
@@ -122,13 +122,13 @@ window.onload = () => {
   function currentClue(clue) {
     /* Puts clue in curentClue div */
     const item = data.clueList;
-    for (let i = 0; i < item.length; i++) {
-      if (item[i].solution === clue) {
-        document.querySelector('#currentClue').innerHTML = item[i].clueNo 
-          + item[i].dir + ': ' + item[i].clue;
-        break;
-      }
+    let i = 0;
+    do {
+      document.querySelector('#currentClue').innerHTML = item[i].clueNo 
+        + item[i].dir + ': ' + item[i].clue;
+      i++;
     }
+    while (item[i-1].solution !== clue)
   }
 
   function selectClue(e) {
@@ -137,14 +137,14 @@ window.onload = () => {
     const dir = id.pop();
     id = Number(id.join(''));
     const item = data.clueList;
-      for (let i = 0; i < item.length; i++) {
-        if (item[i].clueNo === id && item[i].dir === dir) {
-        const cell = item[i].y * data.gridSize + item[i].x;
-        selectWord(cell, dir);
-        document.querySelector('#grid-item-' + cell).firstElementChild.focus();
-        break;
-      }
-    }  
+    let i = 0;
+    do {
+      const cell = item[i].y * data.gridSize + item[i].x;
+      selectWord(cell, dir);
+      document.querySelector('#grid-item-' + cell).firstElementChild.focus();
+      i++;
+    }
+    while (item[i-1].clueNo !== id || item[i-1].dir !== dir)
   }
 
   function makeGrid(gridSize) {

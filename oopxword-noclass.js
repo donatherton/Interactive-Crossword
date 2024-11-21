@@ -120,19 +120,19 @@ function CrossWord(data) {
     });
     // Puts clue in curentClue div
     this.currentClue(clue.join(''));
-    }
+  }
 
-    this.currentClue = (clue) => {
+  this.currentClue = (clue) => {
     /* Puts clue in curentClue div */
     const item = this.data.clueList;
-    for (let i = 0; i < item.length; i++) {
-      if (item[i].solution === clue) {
-        document.querySelector('#currentClue').innerHTML = item[i].clueNo 
-          + item[i].dir + ': ' + item[i].clue;
-        break;
-      }
+    let i = 0;
+    do {
+      document.querySelector('#currentClue').innerHTML = item[i].clueNo 
+        + item[i].dir + ': ' + item[i].clue;
+      i++;
     }
-    }
+    while (item[i-1].solution !== clue)
+  }
 
   this.selectClue = (e) => {
     /* Returns first cell of word when user clicks clue list */
@@ -141,14 +141,14 @@ function CrossWord(data) {
     id = Number(id.join(''));
     //this.data.clueList.forEach((item) => 
     const item = this.data.clueList;
-    for (let i = 0; i < item.length; i++) {
-      if (item[i].clueNo === id && item[i].dir === dir) {
-        const cell = item[i].y * this.data.gridSize + item[i].x;
-        this.selectWord(cell, dir);
-        document.querySelector('#grid-item-' + cell).firstElementChild.focus();
-        break;
-      }
-    }  
+    let i = 0;
+    do {
+      const cell = item[i].y * this.data.gridSize + item[i].x;
+      this.selectWord(cell, dir);
+      document.querySelector('#grid-item-' + cell).firstElementChild.focus();
+      i++;
+    }
+    while (item[i-1].clueNo !== id || item[i-1].dir !== dir)
   }
 
   this.makeGrid = (gridSize) => {
