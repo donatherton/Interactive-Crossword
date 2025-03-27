@@ -13,11 +13,12 @@ function CrossWord(data) {
     data.clueList.forEach(item => clueNumber(item));
     const grid = document.querySelector('#xword-grid');
     grid.addEventListener('click', e => {
+      console.log(this);
       if (e.target.tagName === 'INPUT') {
         selectWord(Number(e.target.parentElement.getAttribute('id').replace('grid-item-', '')))
       }
     });
-    grid.addEventListener('input', e => moveFocus(e));
+    grid.addEventListener('input', moveFocus);
     document.querySelector('#clues').addEventListener('click', selectClue);
     document.querySelector('#solve').addEventListener('click', solve);
     document.querySelector('#check').addEventListener('click', check);
@@ -204,8 +205,6 @@ function CrossWord(data) {
   }
 }
 
-window.onload = () => {
-  const data = JSON.parse(document.getElementById('data').textContent);
-  let crossWord = new CrossWord(data);
-  crossWord.init();
-}
+const data = JSON.parse(document.getElementById('data').textContent);
+let crossWord = new CrossWord(data);
+crossWord.init();
